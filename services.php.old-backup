@@ -1,0 +1,37 @@
+<?php
+$pageTitle = 'Services';
+require __DIR__ . '/includes/header.php';
+
+$services = [
+    ['Website Design & Development', 'Responsive, SEO-friendly websites built with modern standards.'],
+    ['Web Applications', 'PHP/MySQL applications such as dashboards, portals and booking systems.'],
+    ['Maintenance & Hosting Support', 'Updates, backups and monitoring so your site stays online.'],
+    ['IT Consulting', 'Practical advice on tools, security and infrastructure.'],
+];
+?>
+
+<section class="interior-shell services-page">
+    <div class="interior-heading services-heading reveal">
+        <p class="interior-kicker"><span>02</span> / What we do</p>
+        <h1>Digital work,<br><em>made useful.</em></h1>
+        <p class="interior-lede">A focused set of capabilities for building, improving, and supporting the systems your business depends on.</p>
+    </div>
+
+    <div class="service-grid reveal-stagger reveal">
+        <?php foreach ($services as $index => $service): ?>
+            <article class="service-card">
+                <div class="service-card-top"><span><?= sprintf('%02d', $index + 1) ?></span><b aria-hidden="true">&nearr;</b></div>
+                <h2><?= htmlspecialchars($service[0]) ?></h2>
+                <p><?= htmlspecialchars($service[1]) ?></p>
+                <div class="service-card-rule" aria-hidden="true"></div>
+            </article>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="services-cta">
+        <p>Have a challenge in mind?</p>
+        <a href="contact.php">Tell us about it <span aria-hidden="true">&nearr;</span></a>
+    </div>
+</section>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>

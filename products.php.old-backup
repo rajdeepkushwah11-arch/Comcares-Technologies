@@ -1,0 +1,69 @@
+<?php
+$pageTitle = 'Products';
+require __DIR__ . '/includes/header.php';
+
+// Product list — our own products, led by School Sathi
+$products = [
+    [
+        'name'    => 'School Sathi',
+        'tag'     => 'FLAGSHIP',
+        'desc'    => 'A complete school management platform — admissions, fees, attendance, timetables, exams, staff and parent communication in one place.',
+        'url'     => 'https://schoolsathi.in/hub/home',
+        'accent'  => '#667b18',
+    ],
+    [
+        'name'    => 'School Sathi Hub',
+        'tag'     => 'PORTAL',
+        'desc'    => 'The central hub of School Sathi where administrators, teachers and parents log in to track student progress, notices and day-to-day activity.',
+        'url'     => 'https://schoolsathi.in/hub/home',
+        'accent'  => '#4d5c12',
+    ],
+    [
+        'name'    => 'Business Websites & Web Apps',
+        'tag'     => 'BUILD',
+        'desc'    => 'Custom company websites, dashboards, booking systems and portals built with modern PHP/MySQL stacks.',
+        'url'     => 'contact.php',
+        'accent'  => '#2f4f8f',
+    ],
+    [
+        'name'    => 'IT Support & Maintenance Plans',
+        'tag'     => 'SUPPORT',
+        'desc'    => 'Ongoing care for your software — updates, backups, monitoring and priority support so systems stay online.',
+        'url'     => 'contact.php',
+        'accent'  => '#7a5c12',
+    ],
+];
+?>
+
+<section class="interior-shell products-page">
+    <div class="interior-heading products-heading reveal">
+        <p class="interior-kicker"><span>04</span> / Our products</p>
+        <h1>Products we<br><em>own and run.</em></h1>
+        <p class="interior-lede">Beyond client work, we build and maintain our own products — starting with School Sathi, our complete school management platform.</p>
+    </div>
+
+    <div class="product-grid reveal-stagger reveal">
+        <?php foreach ($products as $index => $product): ?>
+            <article class="product-card" style="--product-accent: <?= $product['accent'] ?>">
+                <div class="product-card-top">
+                    <span class="product-index"><?= sprintf('%02d', $index + 1) ?></span>
+                    <span class="product-tag"><?= htmlspecialchars($product['tag']) ?></span>
+                </div>
+                <h2 class="product-name"><?= htmlspecialchars($product['name']) ?></h2>
+                <p class="product-desc"><?= htmlspecialchars($product['desc']) ?></p>
+                <a class="product-link" href="<?= htmlspecialchars($product['url']) ?>"
+                    <?= str_starts_with($product['url'], 'http') ? 'target="_blank" rel="noopener"' : '' ?>>
+                    Explore <span aria-hidden="true">&nearr;</span>
+                </a>
+                <div class="product-card-rule" aria-hidden="true"></div>
+            </article>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="services-cta">
+        <p>Want a demo of School Sathi?</p>
+        <a href="https://schoolsathi.in/hub/home" target="_blank" rel="noopener">Visit School Sathi <span aria-hidden="true">&nearr;</span></a>
+    </div>
+</section>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>
