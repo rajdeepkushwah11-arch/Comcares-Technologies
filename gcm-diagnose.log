@@ -1,0 +1,226 @@
+﻿Diagnose log at 2026-10-19T05:42:55Z
+
+AppPath: C:\Program Files\Git\mingw64\bin\git-credential-manager.exe
+InstallDir: C:\Program Files\Git\mingw64\bin\
+Version: 2.7.3+5fa7116896c82164996a609accd1c5ad90fe730a
+
+------------
+Diagnostic: Environment
+Skipped: False
+Success: True
+Exception: None
+Log:
+OSType: Windows
+OSVersion: 10.0 (build 26200)
+Reading environment variables... OK
+ Variables:
+OneDriveConsumer=C:\Users\Mahakaal\OneDrive
+ProgramFiles(x86)=C:\Program Files (x86)
+MSYSTEM=MINGW64
+ProgramW6432=C:\Program Files
+ANDROID_EMULATOR=E:\Android\Sdk\emulator
+ChocolateyInstall=C:\ProgramData\chocolatey
+PROCESSOR_IDENTIFIER=AMD64 Family 23 Model 96 Stepping 1, AuthenticAMD
+TMP=C:\Users\Mahakaal\AppData\Local\Temp
+PROCESSOR_ARCHITECTURE=AMD64
+Path=C:/Program Files/Git/mingw64/libexec/git-core;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Mahakaal\bin;C:\Users\Mahakaal\.codegpt\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Python314\Scripts\;C:\Python314\;C:\Program Files\Microsoft\bin;C:\Users\Mahakaal\OneDrive\Desktop\XAMPP\php;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\MongoDB\Server\7.0\bin;C:\ProgramData\chocolatey\bin;C:\Users\Mahakaal\AppData\Local\Android\Sdk\emulator;E:\platform-tools-latest-windows.zip;C:\platform-tools;D:\Git\cmd;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\dotnet\;C:\Users\Mahakaal\AppData\Local\Programs\Python\Launcher\;C:\Users\Mahakaal\AppData\Local\Microsoft\WindowsApps;C:\Users\Mahakaal\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Mahakaal\AppData\Local\Android\Sdk\platform-tools;C:\Users\Mahakaal\AppData\Roaming\npm;C:\Users\Mahakaal\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\Mahakaal\AppData\Local\Microsoft\WinGet\Packages\PHP.PHP.8.4_Microsoft.Winget.Source_8wekyb3d8bbwe;
+ProgramData=C:\ProgramData
+PROCESSOR_REVISION=6001
+USERPROFILE=C:\Users\Mahakaal
+VSCODE_ESM_ENTRYPOINT=vs/workbench/api/node/extensionHostProcess
+CommonProgramFiles=C:\Program Files\Common Files
+ChocolateyLastPathUpdate=133924037336049204
+FPS_BROWSER_APP_PROFILE_STRING=Internet Explorer
+FPS_BROWSER_USER_PROFILE_STRING=Default
+ACSetupSvcPort=23210
+TEMP=C:\Users\Mahakaal\AppData\Local\Temp
+EFC_15700_3789132940=1
+SystemRoot=C:\WINDOWS
+SESSIONNAME=Console
+ANDROID_USER_HOME=E:\Android\.android
+GIT_EXEC_PATH=C:/Program Files/Git/mingw64/libexec/git-core
+PLINK_PROTOCOL=ssh
+EFC_15700_4126798990=1
+VSCODE_NODE_COMPILE_CACHE_ROOT=C:\Users\Mahakaal\AppData\Local\Programs\Microsoft VS Code\6d62b1d5da\resources\app\node-compile-cache
+EFC_15700_2283032206=1
+OneDrive=C:\Users\Mahakaal\OneDrive
+Android_AVD_HOME=E:\Android\.android\avd
+LOGONSERVER=\\LAPTOP-IHLQDGRB
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+windir=C:\WINDOWS
+PROCESSOR_LEVEL=23
+DEBUG=release
+APPLICATION_INSIGHTS_NO_STATSBEAT=true
+RlsSvcPort=22112
+HOMEPATH=\Users\Mahakaal
+EXPERIMENTAL_HTTP_PROXY_SUPPORT=true
+COMPUTERNAME=LAPTOP-IHLQDGRB
+VSCODE_IPC_HOOK=\\.\pipe\da904f9b-1.142.0-main-sock
+VSCODE_HANDLES_UNCAUGHT_ERRORS=true
+ALLUSERSPROFILE=C:\ProgramData
+CommonProgramW6432=C:\Program Files\Common Files
+USERNAME=Mahakaal
+VSCODE_NODE_COMPILE_CACHE_KIND=extension-host
+TERM=xterm-256color
+Android_App=E:\Android\Sdk\platform-tools
+ANDROID_SDK_ROOT=E:\Android\Sdk
+EFC_15700_1592913036=1
+DriverData=C:\Windows\System32\Drivers\DriverData
+HOMEDRIVE=C:
+VSCODE_PID=20940
+VSCODE_CRASH_REPORTER_PROCESS_TYPE=extensionHost
+GIT_TRACE2_PARENT_SID=59b72162-5eae-4d60-b93c-457a6a58c195
+SystemDrive=C:
+NUMBER_OF_PROCESSORS=12
+OS=Windows_NT
+VBOX_HWVIRTEX_IGNORE_SVM_IN_USE=1
+NO_PROXY=
+ProgramFiles=C:\Program Files
+ComSpec=C:\WINDOWS\system32\cmd.exe
+NoDefaultCurrentDirectoryInExePath=1
+VSCODE_CWD=C:\Users\Mahakaal\AppData\Local\Programs\Microsoft VS Code
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW;.CPL
+HOME=C:\Users\Mahakaal
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL=true
+JAVA_HOME=C:\Program Files\Microsoft
+ELECTRON_RUN_AS_NODE=1
+PSModulePath=C:\Users\Mahakaal\OneDrive\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+TMPDIR=C:\Users\Mahakaal\AppData\Local\Temp
+GRADLE_USER_HOME=C:\gradle-home
+APPDATA=C:\Users\Mahakaal\AppData\Roaming
+USERDOMAIN=LAPTOP-IHLQDGRB
+ACSvcPort=17532
+LC_CTYPE=C.UTF-8
+LOCALAPPDATA=C:\Users\Mahakaal\AppData\Local
+VSCODE_NLS_CONFIG={"userLocale":"en-us","osLocale":"en-us","resolvedLanguage":"en","defaultMessagesFile":"C:\\Users\\Mahakaal\\AppData\\Local\\Programs\\Microsoft VS Code\\6d62b1d5da\\resources\\app\\out\\nls.messages.json","locale":"en-us","availableLanguages":{}}
+__TELEMETRY_CLIENT_ID=5896ca83-26c5-4957-9258-e5a72d9e93ca
+EFC_15700_2775293581=1
+CHROME_CRASHPAD_PIPE_NAME=\\.\pipe\crashpad_20940_RRKSQRQIIBFASXPT
+EFC_15700_1262719628=1
+USERDOMAIN_ROAMINGPROFILE=LAPTOP-IHLQDGRB
+COPILOT_OTEL_FILE_EXPORTER_PATH=\\.\nul
+COLORTERM=truecolor
+VSCODE_CODE_CACHE_PATH=C:\Users\Mahakaal\AppData\Roaming\Code\CachedData\6d62b1d5dace93a33b3a6d3eca1317bd5e15bcb1
+PUBLIC=C:\Users\Public
+VSCODE_L10N_BUNDLE_LOCATION=
+ANDROID_HOME=E:\Android\Sdk
+
+
+------------
+Diagnostic: File system
+Skipped: False
+Success: True
+Exception: None
+Log:
+Temporary directory is 'C:\Users\Mahakaal\AppData\Local\Temp\'...
+Checking basic file I/O...
+Writing to temporary file 'C:\Users\Mahakaal\AppData\Local\Temp\45a4462ebabf25a75bbcdcba'... OK
+Reading from temporary file 'C:\Users\Mahakaal\AppData\Local\Temp\45a4462ebabf25a75bbcdcba'... OK
+Deleting temporary file 'C:\Users\Mahakaal\AppData\Local\Temp\45a4462ebabf25a75bbcdcba'... OK
+Testing IFileSystem instance...
+UserHomePath: C:\Users\Mahakaal
+UserDataDirectoryPath: C:\Users\Mahakaal\.gcm
+GetCurrentDirectory(): C:\Users\Mahakaal\OneDrive\Desktop\Comcares Technology
+
+------------
+Diagnostic: Networking
+Skipped: False
+Success: True
+Exception: None
+Log:
+Checking networking and HTTP stack...
+Creating HTTP client... OK
+IsNetworkAvailable: True
+Sending HEAD request to http://example.com...Sending HEAD request to https://example.com... OK
+ OK
+Acquiring free TCP port... OK
+Testing local HTTP loopback connections...
+Creating new HTTP listener for http://localhost:58583/... OK
+Waiting for loopback connection... OK
+Writing response... OK
+Waiting for response data... OK
+Loopback connection data OK
+
+------------
+Diagnostic: Git
+Skipped: False
+Success: True
+Exception: None
+Log:
+Getting Git version... OK
+Git version is '2.54.0.windows.1'
+Locating current repository...Git repository at 'C:/Users/Mahakaal/OneDrive/Desktop/Comcares Technology/.git'
+ OK
+Listing all Git configuration... OK
+Git configuration:
+file:C:/Program Files/Git/etc/gitconfig	diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/etc/gitconfig	filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig	http.sslbackend=schannel
+file:C:/Program Files/Git/etc/gitconfig	core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig	core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig	core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig	pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig	credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig	credential.https://dev.azure.com.usehttppath=true
+file:C:/Program Files/Git/etc/gitconfig	init.defaultbranch=master
+file:C:/Users/Mahakaal/.gitconfig	rajdeep.mail=rajdeepkushwah847@gmail.com
+file:C:/Users/Mahakaal/.gitconfig	core.autocrlf=true
+file:C:/Users/Mahakaal/.gitconfig	core.longpaths=true
+file:C:/Users/Mahakaal/.gitconfig	difftool.sourcetree.cmd='' 
+file:C:/Users/Mahakaal/.gitconfig	mergetool.sourcetree.cmd='' 
+file:C:/Users/Mahakaal/.gitconfig	mergetool.sourcetree.trustexitcode=false
+file:C:/Users/Mahakaal/.gitconfig	mergetool.sourcetree.keepbackup=false
+file:C:/Users/Mahakaal/.gitconfig	credential.helperselector.selected=manager
+file:C:/Users/Mahakaal/.gitconfig	credential.usehttppath=true
+file:C:/Users/Mahakaal/.gitconfig	credential.helper=manager
+file:C:/Users/Mahakaal/.gitconfig	gui.recentrepo=E:/ChakkiBuddyStore/StoreAppChakkiBuddy
+file:C:/Users/Mahakaal/.gitconfig	user.email=rajdeep.valennext@gmail.com
+file:C:/Users/Mahakaal/.gitconfig	user.name=Rajdeep Kushwah
+file:.git/config	core.repositoryformatversion=0
+file:.git/config	core.filemode=false
+file:.git/config	core.bare=false
+file:.git/config	core.logallrefupdates=true
+file:.git/config	core.symlinks=false
+file:.git/config	core.ignorecase=true
+file:.git/config	remote.origin.url=https://github.com/Rajdeep011/Comcares-Technologies.git
+file:.git/config	remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+
+
+------------
+Diagnostic: Credential storage
+Skipped: False
+Success: True
+Exception: None
+Log:
+ICredentialStore instance is of type: CredentialStore
+Writing test credential... OK
+Reading test credential... OK
+Deleting test credential... OK
+
+------------
+Diagnostic: Microsoft authentication (AAD/MSA)
+Skipped: False
+Success: True
+Exception: None
+Log:
+Broker is not enabled.
+Flow type is: Auto
+Gathering MSAL token cache data... OK
+CacheDirectory: C:\Users\Mahakaal\AppData\Local\.IdentityService
+CacheFileName: msal.cache
+CacheFilePath: C:\Users\Mahakaal\AppData\Local\.IdentityService\msal.cache
+Creating cache helper... OK
+Verifying MSAL token cache persistence... OK
+
+------------
+Diagnostic: GitHub API
+Skipped: False
+Success: True
+Exception: None
+Log:
+Using 'https://github.com/' as API target.
+Querying '/meta' endpoint... OK
+
