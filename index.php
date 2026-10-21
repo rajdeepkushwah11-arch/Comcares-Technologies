@@ -1,4 +1,4 @@
-<?php
+﻿﻿<?php
 $pageTitle = 'The Digital Next';
 require __DIR__ . '/includes/header.php';
 ?>
@@ -31,8 +31,21 @@ require __DIR__ . '/includes/header.php';
         <div class="next-ticker-track" aria-hidden="true">
             <span>Web platforms</span><i>&starf;</i><span>Business software</span><i>&starf;</i><span>Cloud systems</span><i>&starf;</i><span>Digital strategy</span><i>&starf;</i><span>IT support</span><i>&starf;</i>
             <span>Web platforms</span><i>&starf;</i><span>Business software</span><i>&starf;</i><span>Cloud systems</span><i>&starf;</i><span>Digital strategy</span><i>&starf;</i><span>IT support</span><i>&starf;</i>
+            <span>Web platforms</span><i>&starf;</i><span>Business software</span><i>&starf;</i><span>Cloud systems</span><i>&starf;</i><span>Digital strategy</span><i>&starf;</i><span>IT support</span><i>&starf;</i>
+            <span>Web platforms</span><i>&starf;</i><span>Business software</span><i>&starf;</i><span>Cloud systems</span><i>&starf;</i><span>Digital strategy</span><i>&starf;</i><span>IT support</span><i>&starf;</i>
         </div>
     </div>
+
+    <style>
+        /* Always-on infinite auto-scroll for the capabilities ticker.
+           Driven by assets/horizontal-scroll.js (already loaded site-wide):
+           it advances scrollLeft every frame and wraps seamlessly.
+           These rules only neutralise the hover/focus pauses so the
+           marquee NEVER stops, and hide the scrollbar for a clean strip. */
+        .next-ticker { overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none; }
+        .next-ticker::-webkit-scrollbar { display: none; }
+        .next-ticker .next-ticker-track { will-change: scroll-position; }
+    </style>
 
     <section class="next-section next-capabilities" id="capabilities">
         <div class="next-wrap">
@@ -171,14 +184,14 @@ require __DIR__ . '/includes/header.php';
             </div>
             <div class="next-voice-marquee next-animate" role="region" aria-label="Client testimonials" tabindex="0" data-scroll-duration="48">
                 <div class="next-voice-track">
-                    <blockquote class="next-voice"><p>&ldquo;They rebuilt our booking platform in eight weeks. Support calls dropped by half.&rdquo;</p><footer><b>RK</b><span>Ravi K. &middot; Hospitality group</span><i>&#9733;&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
+                    <blockquote class="next-voice"><p>&ldquo;They rebuilt our booking platform in eight weeks. Support calls dropped by half.&rdquo;</p><footer><b>RK</b><span>Ravi K. &middot; Hospitality group</span><i>&#9733;&#9733;&#9733;</i></footer></blockquote>
                     <blockquote class="next-voice"><p>&ldquo;The dashboard they built is the first tool my whole team actually opens every morning.&rdquo;</p><footer><b>SM</b><span>Sana M. &middot; Retail operations</span><i>&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
                     <blockquote class="next-voice"><p>&ldquo;Cloud migration with zero downtime. I kept waiting for the problem that never came.&rdquo;</p><footer><b>AT</b><span>Arun T. &middot; Manufacturing</span><i>&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
                     <blockquote class="next-voice"><p>&ldquo;Responsive, honest and genuinely senior. They talk like partners, not vendors.&rdquo;</p><footer><b>PD</b><span>Priya D. &middot; Fintech</span><i>&#9733;&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
                     <blockquote class="next-voice"><p>&ldquo;They rebuilt our booking platform in eight weeks. Support calls dropped by half.&rdquo;</p><footer><b>RK</b><span>Ravi K. &middot; Hospitality group</span><i>&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
                     <blockquote class="next-voice"><p>&ldquo;The dashboard they built is the first tool my whole team actually opens every morning.&rdquo;</p><footer><b>SM</b><span>Sana M. &middot; Retail operations</span><i>&#9733;&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
-                    <blockquote class="next-voice"><p>&ldquo;Cloud migration with zero downtime. I kept waiting for the problem that never came.&rdquo;</p><footer><b>AT</b><span>Arun T. &middot; Manufacturing</span><i>&#9733;&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
-                    <blockquote class="next-voice"><p>&ldquo;Responsive, honest and genuinely senior. They talk like partners, not vendors.&rdquo;</p><footer><b>PD</b><span>Priya D. &middot; Fintech</span><i>&#9733;&#9733;&#9733;&#9733;&#9733;</i></footer></blockquote>
+                    <blockquote class="next-voice"><p>&ldquo;Cloud migration with zero downtime. I kept waiting for the problem that never came.&rdquo;</p><footer><b>AT</b><span>Arun T. &middot; Manufacturing</span><i>&#9733;&#9733;&#9733;</i></footer></blockquote>
+                    <blockquote class="next-voice"><p>&ldquo;Responsive, honest and genuinely senior. They talk like partners, not vendors.&rdquo;</p><footer><b>PD</b><span>Priya D. &middot; Fintech</span><i>&#9733;&#9733;&#9733;</i></footer></blockquote>
                 </div>
             </div>
         </div>
@@ -218,6 +231,17 @@ require __DIR__ . '/includes/header.php';
 (function () {
     'use strict';
     var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* Capabilities ticker: force continuous auto-scroll.
+       horizontal-scroll.js pauses while hovered/focused; this page wants
+       an always-running marquee, so we strip those pause listeners only
+       from the ticker (the testimonials marquee keeps its normal behaviour). */
+    var ticker = document.querySelector('.next-ticker');
+    if (ticker) {
+        var clean = ticker.cloneNode(true); /* clone drops all listeners */
+        clean.setAttribute('data-autoscroll', 'true');
+        ticker.parentNode.replaceChild(clean, ticker);
+    }
 
     /* scroll reveal */
     var revealEls = document.querySelectorAll('.next-animate');
