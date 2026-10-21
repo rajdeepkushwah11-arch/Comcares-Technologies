@@ -1,4 +1,4 @@
-﻿﻿<?php
+<?php
 $pageTitle = 'The Digital Next';
 require __DIR__ . '/includes/header.php';
 ?>
