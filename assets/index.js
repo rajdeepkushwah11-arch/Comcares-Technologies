@@ -241,7 +241,7 @@
         var dy = e.clientY - (r.top + r.height / 2);
         btn.style.transition = "transform .15s ease-out";
         btn.style.transform =
-          "translate(" + dx * 0.25 + "px," + dy * 0.25 + "px)";
+          "translate(" + dx * 0.25 + "px," + dy * 0.25 + "px)"; 
       });
       btn.addEventListener("pointerleave", function () {
         btn.style.transition = "transform .45s cubic-bezier(.22,.8,.24,1.2)";

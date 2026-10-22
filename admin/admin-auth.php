@@ -1,4 +1,4 @@
-    <?php
+<?php
 // Separate admin authentication — completely independent of the public users table
 session_start();
 require_once __DIR__ . '/../includes/config.php';
