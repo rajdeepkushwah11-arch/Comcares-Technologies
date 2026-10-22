@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL,
     message TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_contact_messages_created_at (created_at)
 );
 
 -- Separate admin accounts (NOT the same as regular users)

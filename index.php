@@ -19,6 +19,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
             <div class="next-hero-facts">
+                
                 <div class="next-fact"><strong data-count="150">0</strong><span>Projects delivered</span></div>
                 <div class="next-fact"><strong data-count="98" data-suffix="%">0</strong><span>Client satisfaction</span></div>
                 <div class="next-fact"><strong data-count="24" data-suffix="/7">0</strong><span>Support coverage</span></div>
