@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/includes/config.php';
-$_SESSION = [];
-session_destroy();
+require __DIR__ . '/includes/auth.php';
+logoutUser();
 header('Location: index.php');
 exit;

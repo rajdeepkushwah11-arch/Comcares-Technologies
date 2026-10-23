@@ -34,6 +34,14 @@
       "dest": "/api/router.php?path=login.php"
     },
     {
+      "src": "^/forgot-password\\.php$",
+      "dest": "/api/router.php?path=forgot-password.php"
+    },
+    {
+      "src": "^/reset-password\\.php$",
+      "dest": "/api/router.php?path=reset-password.php"
+    },
+    {
       "src": "^/logout\\.php$",
       "dest": "/api/router.php?path=logout.php"
     },

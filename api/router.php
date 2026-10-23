@@ -22,6 +22,8 @@ $pages = [
     'products.php',
     'contact.php',
     'login.php',
+    'forgot-password.php',
+    'reset-password.php',
     'logout.php',
 ];
 

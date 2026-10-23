@@ -10,9 +10,26 @@ CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    status ENUM('active','suspended','pending') NOT NULL DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS password_resets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token_hash CHAR(64) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    used_at DATETIME NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_password_resets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_password_resets_lookup (token_hash, expires_at, used_at),
+    INDEX idx_password_resets_user (user_id)
+);
+
+-- Migration for databases created with the older schema (password column, no status):
+-- ALTER TABLE users ADD COLUMN status ENUM('active','suspended','pending') NOT NULL DEFAULT 'active' AFTER password;
+-- ALTER TABLE users CHANGE password password_hash VARCHAR(255) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS contact_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
