@@ -10,8 +10,51 @@ if (($_GET['action'] ?? '') === 'logout') {
     exit;
 }
 
-// Fetch recent contact messages (newest first)
-$messages = db()->query('SELECT * FROM contact_messages ORDER BY created_at DESC, id DESC')->fetchAll();
+// Messages are intentionally read-only here. They remain stored until an admin
+// explicitly removes them through a future, dedicated deletion action.
+$filterDate = trim($_GET['date'] ?? '');
+$filterMonth = trim($_GET['month'] ?? '');
+$filterDay = trim($_GET['day'] ?? '');
+$weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+$where = [];
+$params = [];
+
+if ($filterDate !== '') {
+    $date = DateTime::createFromFormat('Y-m-d', $filterDate);
+    if ($date && $date->format('Y-m-d') === $filterDate) {
+        $where[] = 'DATE(created_at) = ?';
+        $params[] = $filterDate;
+    } else {
+        $filterDate = '';
+    }
+}
+
+if ($filterMonth !== '') {
+    $month = DateTime::createFromFormat('!Y-m', $filterMonth);
+    if ($month && $month->format('Y-m') === $filterMonth) {
+        $where[] = 'created_at >= ? AND created_at < ?';
+        $params[] = $month->format('Y-m-01 00:00:00');
+        $params[] = $month->modify('+1 month')->format('Y-m-01 00:00:00');
+    } else {
+        $filterMonth = '';
+    }
+}
+
+if (!in_array($filterDay, $weekdays, true)) {
+    $filterDay = '';
+} elseif ($filterDay !== '') {
+    $where[] = 'WEEKDAY(created_at) = ?';
+    $params[] = array_search($filterDay, $weekdays, true);
+}
+
+$sql = 'SELECT * FROM contact_messages';
+if ($where) {
+    $sql .= ' WHERE ' . implode(' AND ', $where);
+}
+$sql .= ' ORDER BY created_at DESC, id DESC';
+$statement = db()->prepare($sql);
+$statement->execute($params);
+$messages = $statement->fetchAll();
 
 $total  = count($messages);
 $latest = $total ? $messages[0] : null;
@@ -39,20 +82,21 @@ function timeAgo(string $ts): string
     <title>Admin Dashboard &middot; Contact Enquiries</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0c12;
-            --glass: rgba(255, 255, 255, .055);
-            --line: rgba(255, 255, 255, .09);
-            --line-hi: rgba(255, 255, 255, .18);
-            --a1: #5b8cff;
-            --a2: #8b5cf6;
-            --a3: #34d399;
-            --amber: #fbbf24;
-            --ink: #f4f6fb;
-            --dim: #9aa3b8;
-            --faint: #6b7284;
+            --bg: #f6f8fc;
+            --paper: #ffffff;
+            --ink: #172033;
+            --soft: #596579;
+            --faint: #8491a7;
+            --line: #e7ecf3;
+            --line-strong: #d4dce8;
+            --gold: #2563eb;
+            --gold-soft: #eaf1ff;
+            --green: #0d9a6c;
+            --shadow: 0 1px 2px rgba(18, 32, 55, .03), 0 10px 28px rgba(18, 32, 55, .055);
+            --shadow-hover: 0 14px 30px rgba(18, 32, 55, .09);
             --ease: cubic-bezier(.22, .8, .24, 1);
         }
 
@@ -67,112 +111,40 @@ function timeAgo(string $ts): string
         body.dash {
             margin: 0;
             min-height: 100vh;
-            background: var(--bg);
+            background: linear-gradient(135deg, #f9fbff 0%, var(--bg) 58%, #f2f6fc 100%);
             color: var(--ink);
             font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
         }
 
         ::selection {
-            background: var(--a1);
+            background: var(--gold);
             color: #fff;
         }
 
-        /* ================= atmosphere ================= */
-        .fx {
+        /* ===================== atmosphere ===================== */
+        .paper-grain {
             position: fixed;
             inset: 0;
             pointer-events: none;
             z-index: 0;
-        }
-
-        .fx .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: .5;
-        }
-
-        .fx .b1 {
-            width: 52vw;
-            height: 52vw;
-            top: -22vw;
-            right: -14vw;
-            background: radial-gradient(circle at 40% 40%, rgba(91, 140, 255, .5), rgba(91, 140, 255, .12) 55%, transparent 75%);
-            animation: drift1 28s ease-in-out infinite alternate;
-        }
-
-        .fx .b2 {
-            width: 42vw;
-            height: 42vw;
-            bottom: -20vw;
-            left: -12vw;
-            background: radial-gradient(circle at 55% 45%, rgba(139, 92, 246, .42), rgba(139, 92, 246, .1) 55%, transparent 75%);
-            animation: drift2 34s ease-in-out infinite alternate;
-        }
-
-        .fx .b3 {
-            width: 24vw;
-            height: 24vw;
-            top: 38%;
-            left: 30%;
-            background: radial-gradient(circle, rgba(52, 211, 153, .16), transparent 70%);
-            animation: drift3 24s ease-in-out infinite alternate;
-        }
-
-        @keyframes drift1 {
-            to {
-                transform: translate(-7vw, 6vw) scale(1.16);
-            }
-        }
-
-        @keyframes drift2 {
-            to {
-                transform: translate(6vw, -5vw) scale(1.12);
-            }
-        }
-
-        @keyframes drift3 {
-            to {
-                transform: translate(-6vw, -7vw);
-                opacity: .8;
-            }
-        }
-
-        .fx .grid {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(255, 255, 255, .03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, .03) 1px, transparent 1px);
-            background-size: 46px 46px;
-            mask-image: radial-gradient(ellipse 100% 65% at 50% 0%, #000 25%, transparent 78%);
-            -webkit-mask-image: radial-gradient(ellipse 100% 65% at 50% 0%, #000 25%, transparent 78%);
-        }
-
-        .fx .noise {
-            position: absolute;
-            inset: 0;
-            opacity: .35;
-            mix-blend-mode: overlay;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity: 0;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
         }
 
         .adm-progress {
             position: fixed;
             top: 0;
             left: 0;
-            height: 3px;
+            height: 2px;
             width: 0%;
-            background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
-            box-shadow: 0 0 14px rgba(91, 140, 255, .7);
+            background: var(--gold);
             z-index: 200;
-            border-radius: 0 3px 3px 0;
-            transition: width .1s linear;
+            transition: width .12s linear;
         }
 
-        /* ================= layout ================= */
+        /* ===================== shell ===================== */
         .shell {
             position: relative;
             z-index: 1;
@@ -185,260 +157,138 @@ function timeAgo(string $ts): string
             position: sticky;
             top: 0;
             align-self: flex-start;
-            width: 248px;
+            width: 232px;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 1.6rem 1.1rem;
-            background: rgba(13, 16, 24, .72);
-            border-right: 1px solid var(--line);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            animation: side-in .7s var(--ease) both;
+            padding: 2.2rem 1.6rem 1.8rem;
+            border-right: 1px solid #263650;
+            background: #152238;
+            color: #f7faff;
+            box-shadow: 8px 0 24px rgba(15, 30, 55, .06);
+            animation: fade-in .8s var(--ease) both;
         }
 
-        @keyframes side-in {
-            from {
-                opacity: 0;
-                transform: translateX(-24px);
-            }
-
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        .side .logo {
+        .side .brand {
             display: flex;
-            align-items: center;
-            gap: .8rem;
-            padding: 0 .4rem 1.6rem;
+            align-items: baseline;
+            gap: .5rem;
+            margin-bottom: .4rem;
         }
 
-        .side .logo .mark {
-            width: 40px;
-            height: 40px;
-            border-radius: 13px;
-            flex: none;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, var(--a1), var(--a2));
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.05rem;
-            box-shadow: 0 8px 24px rgba(91, 140, 255, .4), inset 0 1px 0 rgba(255, 255, 255, .4);
-            position: relative;
-            overflow: hidden;
-            animation: mark-glow 3.4s ease-in-out infinite;
-        }
-
-        .side .logo .mark::after {
-            content: '';
-            position: absolute;
-            top: -60%;
-            left: -60%;
-            width: 55%;
-            height: 220%;
-            transform: rotate(25deg);
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .55), transparent);
-            animation: sheen 3.8s ease-in-out infinite;
-        }
-
-        @keyframes mark-glow {
-
-            0%,
-            100% {
-                box-shadow: 0 8px 24px rgba(91, 140, 255, .35);
-            }
-
-            50% {
-                box-shadow: 0 8px 34px rgba(139, 92, 246, .55);
-            }
-        }
-
-        @keyframes sheen {
-
-            0%,
-            58% {
-                left: -60%;
-            }
-
-            88%,
-            100% {
-                left: 130%;
-            }
-        }
-
-        .side .logo b {
-            display: block;
-            font-size: .95rem;
+        .side .brand b {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 600;
             letter-spacing: -.01em;
         }
 
-        .side .logo small {
-            display: block;
-            color: var(--a1);
+        .side .brand small {
             font-family: 'DM Mono', Consolas, monospace;
-            font-size: .56rem;
-            letter-spacing: .26em;
-            font-weight: 400;
-            margin-top: .15rem;
+            font-size: .55rem;
+            letter-spacing: .28em;
+            color: #8db8ff;
         }
 
-        .side .nav-label {
-            color: var(--faint);
-            font-size: .62rem;
-            letter-spacing: .22em;
-            text-transform: uppercase;
-            padding: .4rem .6rem;
-            margin-bottom: .5rem;
+        .side .hairline {
+            height: 1px;
+            background: rgba(255, 255, 255, .13);
+            margin-bottom: 1.8rem;
+            transform-origin: left;
+            animation: draw-x 1s .2s var(--ease) both;
         }
 
         .side nav {
             display: flex;
             flex-direction: column;
-            gap: .3rem;
+            gap: .15rem;
         }
 
-        .side .nav-item {
+        .side nav a {
             display: flex;
             align-items: center;
-            gap: .75rem;
-            color: var(--dim);
+            gap: .7rem;
+            color: #b9c7dc;
             text-decoration: none;
-            font-size: .87rem;
+            font-size: .86rem;
             font-weight: 600;
-            padding: .68rem .8rem;
-            border-radius: 12px;
-            border: 1px solid transparent;
+            padding: .65rem .7rem;
+            border-radius: 10px;
             position: relative;
-            transition: background .25s, color .25s, border-color .25s, transform .25s;
+            transition: color .25s, background .25s, transform .25s var(--ease);
         }
 
-        .side .nav-item .ic {
-            width: 30px;
-            height: 30px;
-            border-radius: 9px;
-            flex: none;
-            display: grid;
-            place-items: center;
-            font-size: .85rem;
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid var(--line);
-            transition: border-color .25s, transform .35s var(--ease);
-        }
-
-        .side .nav-item:hover {
-            color: var(--ink);
-            background: rgba(255, 255, 255, .05);
-            transform: translateX(3px);
-        }
-
-        .side .nav-item:hover .ic {
-            border-color: rgba(91, 140, 255, .5);
-            transform: scale(1.06);
-        }
-
-        .side .nav-item.active {
+        .side nav a:hover {
             color: #fff;
-            background: linear-gradient(120deg, rgba(91, 140, 255, .2), rgba(139, 92, 246, .14));
-            border-color: rgba(91, 140, 255, .35);
-            box-shadow: 0 6px 22px rgba(91, 140, 255, .16), inset 0 1px 0 rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .08);
+            transform: translateX(2px);
         }
 
-        .side .nav-item.active::before {
+        .side nav a.active {
+            color: #fff;
+            background: #29446e;
+        }
+
+        .side nav a.active::before {
             content: '';
             position: absolute;
-            left: -1.1rem;
-            top: 22%;
-            bottom: 22%;
-            width: 3px;
-            border-radius: 3px;
-            background: linear-gradient(180deg, var(--a1), var(--a2));
-            box-shadow: 0 0 12px rgba(91, 140, 255, .9);
+            left: -.7rem;
+            top: 25%;
+            bottom: 25%;
+            width: 2px;
+            background: #69a2ff;
         }
 
-        .side .nav-item.active .ic {
-            background: linear-gradient(135deg, var(--a1), var(--a2));
-            border-color: transparent;
-            color: #fff;
-        }
-
-        .side .nav-item .count {
+        .side nav a .cnt {
             margin-left: auto;
             font-family: 'DM Mono', Consolas, monospace;
-            font-size: .68rem;
-            color: var(--a1);
-            background: rgba(91, 140, 255, .14);
-            border: 1px solid rgba(91, 140, 255, .35);
-            padding: .12rem .5rem;
-            border-radius: 999px;
+            font-size: .66rem;
+            color: #a9c8ff;
         }
 
         .side .spacer {
             flex: 1;
         }
 
-        .side .me {
-            display: flex;
-            align-items: center;
-            gap: .7rem;
-            padding: .8rem;
-            border-radius: 14px;
-            background: var(--glass);
-            border: 1px solid var(--line);
-            margin-bottom: .7rem;
+        .side .who {
+            padding: 1rem .2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, .13);
+            margin-top: 1rem;
         }
 
-        .side .me .ava {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            flex: none;
-            display: grid;
-            place-items: center;
-            font-weight: 800;
-            font-size: .8rem;
-            background: linear-gradient(135deg, var(--a1), var(--a2));
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(91, 140, 255, .35);
-        }
-
-        .side .me b {
+        .side .who b {
             display: block;
-            font-size: .8rem;
+            font-size: .84rem;
         }
 
-        .side .me span {
-            color: var(--faint);
-            font-size: .68rem;
+        .side .who span {
+            color: #9caec7;
+            font-size: .7rem;
         }
 
         .side .out {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: .5rem;
-            color: var(--dim);
+            margin-top: .9rem;
+            color: #d6e0ef;
             text-decoration: none;
-            font-size: .82rem;
+            font-size: .8rem;
             font-weight: 700;
-            padding: .68rem;
-            border-radius: 12px;
-            border: 1px solid var(--line);
-            transition: color .25s, border-color .25s, background .25s, transform .2s;
+            padding: .6rem .8rem;
+            border: 1px solid rgba(255, 255, 255, .16);
+            border-radius: 10px;
+            transition: color .25s, border-color .25s, background .25s;
         }
 
         .side .out:hover {
             color: #fff;
-            border-color: rgba(224, 122, 106, .5);
-            background: rgba(224, 122, 106, .12);
-            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, .35);
+            background: rgba(255, 255, 255, .08);
         }
 
         .side .out:focus-visible {
-            outline: 2px solid var(--amber);
+            outline: 2px solid var(--gold);
             outline-offset: 2px;
         }
 
@@ -446,37 +296,24 @@ function timeAgo(string $ts): string
         .main {
             flex: 1;
             min-width: 0;
-            padding: 0 2.2rem 5rem;
+            padding: 2.4rem 3.5rem 5rem;
         }
 
         .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 60;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            background: linear-gradient(180deg, var(--bg) 78%, transparent);
+            margin-bottom: 2.8rem;
+            animation: fade-in .8s .1s var(--ease) both;
         }
 
-        .topbar .crumb {
-            display: flex;
-            align-items: center;
-            gap: .55rem;
+        .topbar .date {
+            font-family: 'DM Mono', Consolas, monospace;
+            font-size: .7rem;
+            letter-spacing: .16em;
+            text-transform: uppercase;
             color: var(--faint);
-            font-size: .78rem;
-        }
-
-        .topbar .crumb b {
-            color: var(--ink);
-            font-weight: 700;
-        }
-
-        .topbar .crumb .sep {
-            opacity: .4;
         }
 
         .live-chip {
@@ -484,311 +321,170 @@ function timeAgo(string $ts): string
             align-items: center;
             gap: .5rem;
             font-family: 'DM Mono', Consolas, monospace;
-            font-size: .72rem;
-            color: var(--dim);
-            background: var(--glass);
+            font-size: .7rem;
+            color: var(--soft);
             border: 1px solid var(--line);
+            background: var(--paper);
             border-radius: 999px;
-            padding: .45rem .9rem;
-            backdrop-filter: blur(10px);
-            white-space: nowrap;
+            padding: .45rem .95rem;
         }
 
         .live-chip .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--a3);
-            box-shadow: 0 0 10px rgba(52, 211, 153, .9);
-            animation: pulse 2.2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: .4;
-                transform: scale(.85);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.15);
-            }
-        }
-
-        /* hero heading */
-        .hero {
-            margin-bottom: 2.3rem;
-        }
-
-        .hero .kicker {
-            display: inline-flex;
-            align-items: center;
-            gap: .55rem;
-            font-family: 'DM Mono', Consolas, monospace;
-            color: var(--a1);
-            font-size: .66rem;
-            letter-spacing: .24em;
-            text-transform: uppercase;
-            margin-bottom: .8rem;
-            padding: .4rem .85rem;
-            border-radius: 999px;
-            background: rgba(91, 140, 255, .1);
-            border: 1px solid rgba(91, 140, 255, .3);
-            animation: rise .6s .05s var(--ease) both;
-        }
-
-        .hero .kicker .d {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: var(--a1);
-            box-shadow: 0 0 8px rgba(91, 140, 255, .9);
-            animation: pulse 2.4s ease-in-out infinite;
+            background: var(--green);
+            animation: breathe 2.6s ease-in-out infinite;
+        }
+
+        /* ---------- hero ---------- */
+        .hero {
+            margin-bottom: 3rem;
+        }
+
+        .hero .eyebrow {
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            font-family: 'DM Mono', Consolas, monospace;
+            font-size: .62rem;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 1.1rem;
+            animation: rise .7s .1s var(--ease) both;
+        }
+
+        .hero .eyebrow::after {
+            content: '';
+            width: 56px;
+            height: 1px;
+            background: var(--gold);
+            opacity: .45;
         }
 
         .hero h1 {
-            margin: 0 0 .55rem;
-            font-size: clamp(1.9rem, 4.4vw, 3rem);
+            margin: 0 0 .6rem;
+            font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
             font-weight: 800;
-            letter-spacing: -.03em;
-            line-height: 1.08;
-            animation: rise .65s .12s var(--ease) both;
+            font-size: clamp(2.15rem, 4vw, 3.2rem);
+            line-height: 1.15;
+            letter-spacing: -.04em;
+            animation: rise .7s .18s var(--ease) both;
         }
 
         .hero h1 em {
-            font-family: Georgia, serif;
-            font-weight: 400;
-            font-style: italic;
-            background: linear-gradient(100deg, var(--a1) 5%, var(--a2) 50%, var(--a3) 100%);
-            background-size: 200% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: grad-slide 6s ease-in-out infinite alternate;
+            font-style: normal;
+            color: var(--gold);
         }
 
-        @keyframes grad-slide {
-            to {
-                background-position: 100% 0;
-            }
-        }
-
-        .hero .lede {
+        .hero p.lede {
             margin: 0;
-            color: var(--dim);
+            color: var(--soft);
             font-size: .95rem;
-            max-width: 560px;
             line-height: 1.7;
-            animation: rise .65s .2s var(--ease) both;
+            max-width: 520px;
+            animation: rise .7s .26s var(--ease) both;
         }
 
-        @keyframes rise {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-
-        /* stat cards */
+        /* ---------- stats ---------- */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 1.1rem;
-            margin-bottom: 2.6rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 3rem;
         }
 
         .stat {
             position: relative;
-            overflow: hidden;
-            cursor: default;
-            background: linear-gradient(160deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .025));
+            background: var(--paper);
             border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 1.4rem 1.5rem;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 18px 44px rgba(0, 0, 0, .35);
-            transition: transform .35s var(--ease), border-color .35s, box-shadow .35s;
-            animation: rise .6s var(--ease) both;
+            border-radius: 12px;
+            padding: 1.5rem 1.6rem 1.4rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform .4s var(--ease), box-shadow .4s var(--ease), border-color .4s;
+            animation: rise .7s var(--ease) both;
         }
 
         .stat:nth-child(1) {
-            animation-delay: .22s;
-        }
-
-        .stat:nth-child(2) {
             animation-delay: .3s;
         }
 
-        .stat:nth-child(3) {
+        .stat:nth-child(2) {
             animation-delay: .38s;
         }
 
-        .stat::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: radial-gradient(240px 180px at var(--mx, 50%) var(--my, -30%), rgba(91, 140, 255, .18), transparent 70%);
-            opacity: 0;
-            transition: opacity .4s;
-            pointer-events: none;
+        .stat:nth-child(3) {
+            animation-delay: .46s;
         }
 
         .stat::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 12%;
-            right: 12%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--c, var(--a1)), transparent);
-            opacity: .55;
+            left: 1.6rem;
+            right: 1.6rem;
+            bottom: 0;
+            height: 2px;
+            background: var(--c, var(--gold));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .45s var(--ease);
         }
 
         .stat:hover {
-            transform: translateY(-6px);
-            border-color: color-mix(in srgb, var(--c, var(--a1)) 45%, transparent);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 26px 60px rgba(0, 0, 0, .45);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--line-strong);
         }
 
-        .stat:hover::before {
-            opacity: 1;
+        .stat:hover::after {
+            transform: scaleX(1);
         }
 
-        .stat .head {
+        .stat .lbl {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
+            gap: .55rem;
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--faint);
+            font-weight: 700;
+            margin-bottom: 1.1rem;
         }
 
-        .stat .ic {
-            width: 42px;
-            height: 42px;
-            border-radius: 13px;
-            display: grid;
-            place-items: center;
-            font-size: 1.05rem;
-            background: color-mix(in srgb, var(--c, var(--a1)) 16%, transparent);
-            border: 1px solid color-mix(in srgb, var(--c, var(--a1)) 40%, transparent);
-            color: var(--c, var(--a1));
-            transition: transform .4s var(--ease);
-        }
-
-        .stat:hover .ic {
-            transform: scale(1.14) rotate(-8deg);
+        .stat .lbl .ic {
+            font-style: normal;
+            color: var(--c, var(--gold));
+            font-size: .9rem;
         }
 
         .stat b.num {
             display: block;
-            font-size: 2.4rem;
+            font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+            font-size: 2.55rem;
             font-weight: 800;
-            letter-spacing: -.04em;
             line-height: 1;
-            margin-bottom: .45rem;
+            letter-spacing: -.02em;
             font-variant-numeric: tabular-nums;
-            background: linear-gradient(180deg, #fff 30%, color-mix(in srgb, var(--c, var(--a1)) 70%, #fff));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: .5rem;
         }
 
-        .stat .lbl {
-            color: var(--faint);
+        .stat .sub {
+            color: var(--soft);
             font-size: .78rem;
-            letter-spacing: .04em;
         }
 
-        .stat .spark {
-            display: flex;
-            align-items: flex-end;
-            gap: 3px;
-            height: 26px;
-        }
-
-        .stat .spark i {
-            width: 5px;
-            border-radius: 3px;
-            background: linear-gradient(180deg, var(--c, var(--a1)), transparent);
-            opacity: .7;
-            transform-origin: bottom;
-            animation: grow .8s var(--ease) both;
-        }
-
-        @keyframes grow {
-            from {
-                transform: scaleY(0);
-            }
-
-            to {
-                transform: scaleY(1);
-            }
-        }
-
-        /* ring stat */
-        .stat .ring {
-            position: relative;
-            width: 46px;
-            height: 46px;
-        }
-
-        .stat .ring svg {
-            transform: rotate(-90deg);
-        }
-
-        .stat .ring circle {
-            fill: none;
-            stroke-width: 4;
-        }
-
-        .stat .ring .track {
-            stroke: rgba(255, 255, 255, .09);
-        }
-
-        .stat .ring .fill {
-            stroke: var(--c, var(--a1));
-            stroke-linecap: round;
-            stroke-dasharray: 125.6;
-            stroke-dashoffset: 125.6;
-            animation: ring 1.6s .5s var(--ease) forwards;
-            filter: drop-shadow(0 0 5px color-mix(in srgb, var(--c, var(--a1)) 70%, transparent));
-        }
-
-        @keyframes ring {
-            to {
-                stroke-dashoffset: var(--dash, 30);
-            }
-        }
-
-        .stat .ring b {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            place-items: center;
-            font-size: .62rem;
-            font-weight: 800;
-            color: var(--ink);
-        }
-
-        /* activity chart */
+        /* ---------- activity panel ---------- */
         .panel {
-            background: linear-gradient(165deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+            background: var(--paper);
             border: 1px solid var(--line);
-            border-radius: 24px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 20px 50px rgba(0, 0, 0, .32);
-            padding: 1.6rem 1.7rem;
-            margin-bottom: 2.4rem;
-            animation: rise .6s .44s var(--ease) both;
+            border-radius: 12px;
+            padding: 1.8rem 1.9rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+            animation: rise .7s .5s var(--ease) both;
         }
 
         .panel-head {
@@ -796,43 +492,36 @@ function timeAgo(string $ts): string
             align-items: baseline;
             justify-content: space-between;
             gap: 1rem;
-            margin-bottom: 1.3rem;
             flex-wrap: wrap;
+            margin-bottom: 1.6rem;
         }
 
         .panel-head h2 {
             margin: 0;
-            font-size: 1.02rem;
+            font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+            font-size: 1.1rem;
             font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-        }
-
-        .panel-head h2 i {
-            font-style: normal;
-            font-size: .8rem;
-            color: var(--a1);
-            width: 28px;
-            height: 28px;
-            border-radius: 9px;
-            display: grid;
-            place-items: center;
-            background: rgba(91, 140, 255, .14);
-            border: 1px solid rgba(91, 140, 255, .35);
+            letter-spacing: -.01em;
         }
 
         .panel-head .meta {
-            color: var(--faint);
-            font-size: .74rem;
             font-family: 'DM Mono', Consolas, monospace;
+            font-size: .68rem;
+            color: var(--faint);
+            letter-spacing: .1em;
         }
 
         .chart {
             display: flex;
             align-items: flex-end;
-            gap: .7rem;
-            height: 130px;
+            gap: .8rem;
+            height: 180px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: .1rem;
+        }
+
+        .chart .bar {
+            max-width: 64px;
         }
 
         .chart .col {
@@ -840,31 +529,28 @@ function timeAgo(string $ts): string
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: .5rem;
-            height: 100%;
             justify-content: flex-end;
+            height: 100%;
+            gap: .55rem;
         }
 
         .chart .bar {
             width: 100%;
-            max-width: 42px;
-            border-radius: 8px 8px 4px;
             min-height: 4px;
-            background: linear-gradient(180deg, var(--a1), rgba(139, 92, 246, .35));
-            box-shadow: 0 0 16px rgba(91, 140, 255, .25), inset 0 1px 0 rgba(255, 255, 255, .35);
-            position: relative;
+            border-radius: 4px 4px 0 0;
+            background: linear-gradient(180deg, #3b82f6, #93c5fd);
             transform-origin: bottom;
-            animation: grow 1s .55s var(--ease) both;
+            animation: grow .9s .6s var(--ease) both;
+            position: relative;
             transition: filter .25s;
         }
 
         .chart .bar.is-today {
-            background: linear-gradient(180deg, var(--a3), rgba(52, 211, 153, .3));
-            box-shadow: 0 0 18px rgba(52, 211, 153, .35), inset 0 1px 0 rgba(255, 255, 255, .4);
+            background: linear-gradient(180deg, #10b981, #86efac);
         }
 
         .chart .bar:hover {
-            filter: brightness(1.25);
+            filter: brightness(1.12);
         }
 
         .chart .bar .tip {
@@ -872,13 +558,12 @@ function timeAgo(string $ts): string
             bottom: calc(100% + 8px);
             left: 50%;
             transform: translateX(-50%) translateY(4px);
-            background: rgba(15, 18, 28, .95);
-            border: 1px solid var(--line-hi);
-            color: var(--ink);
-            font-size: .68rem;
+            background: var(--ink);
+            color: var(--paper);
+            font-size: .66rem;
             font-weight: 700;
-            padding: .25rem .55rem;
-            border-radius: 8px;
+            padding: .3rem .6rem;
+            border-radius: 7px;
             white-space: nowrap;
             opacity: 0;
             pointer-events: none;
@@ -892,297 +577,304 @@ function timeAgo(string $ts): string
             transform: translateX(-50%) translateY(0);
         }
 
-        .chart .cap {
-            color: var(--faint);
-            font-size: .62rem;
-            font-family: 'DM Mono', Consolas, monospace;
-            letter-spacing: .06em;
+        .chart-caps {
+            display: flex;
+            gap: .8rem;
+            margin-top: .6rem;
         }
 
-        /* inbox */
-        .inbox-label {
+        .chart-caps span {
+            flex: 1;
+            text-align: center;
+            font-family: 'DM Mono', Consolas, monospace;
+            font-size: .62rem;
+            letter-spacing: .08em;
+            color: var(--faint);
+            text-transform: uppercase;
+        }
+
+        /* ---------- inbox ---------- */
+        .inbox-head {
             display: flex;
-            align-items: center;
+            align-items: baseline;
             justify-content: space-between;
             gap: 1rem;
-            margin-bottom: 1.15rem;
-            max-width: 1100px;
-            animation: rise .6s .5s var(--ease) both;
+            margin-bottom: 1.6rem;
+            animation: rise .7s .55s var(--ease) both;
         }
 
-        .inbox-label h2 {
+        .inbox-head h2 {
             margin: 0;
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            font-size: 1.02rem;
+            font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+            font-size: 1.1rem;
             font-weight: 800;
         }
 
-        .inbox-label h2 i {
-            font-style: normal;
-            font-size: .8rem;
-            color: var(--a2);
-            width: 28px;
-            height: 28px;
-            border-radius: 9px;
-            display: grid;
-            place-items: center;
-            background: rgba(139, 92, 246, .14);
-            border: 1px solid rgba(139, 92, 246, .35);
-        }
-
-        .inbox-label .badge {
-            color: var(--dim);
-            font-size: .74rem;
+        .inbox-head .badge {
             font-family: 'DM Mono', Consolas, monospace;
-            background: var(--glass);
+            font-size: .68rem;
+            color: var(--soft);
             border: 1px solid var(--line);
+            background: var(--paper);
             padding: .35rem .8rem;
             border-radius: 999px;
-        }
-
-        .inbox-label .badge b {
-            color: var(--a1);
         }
 
         .msgs {
             display: flex;
             flex-direction: column;
-            position: relative;
-            max-width: 1100px;
-        }
-
-        .msgs::before {
-            content: '';
-            position: absolute;
-            left: 26px;
-            top: 20px;
-            bottom: 20px;
-            width: 1px;
-            background: linear-gradient(180deg, rgba(91, 140, 255, .45), rgba(139, 92, 246, .25), transparent);
+            gap: .9rem;
         }
 
         .msg {
             position: relative;
-            margin-left: 54px;
-            background: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .022));
+            background: var(--paper);
             border: 1px solid var(--line);
-            border-radius: 20px;
-            padding: 1.25rem 1.45rem;
-            margin-bottom: 1rem;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 12px 34px rgba(0, 0, 0, .26);
-            transition: transform .3s var(--ease), border-color .3s, box-shadow .3s;
-            animation: rise .55s var(--ease) both;
-            animation-delay: calc(.55s + var(--i, 0) * .06s);
-        }
-
-        .msg::before {
-            content: '';
-            position: absolute;
-            left: -34px;
-            top: 1.7rem;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--faint);
-            border: 2px solid var(--bg);
-            transition: background .3s, box-shadow .3s;
+            border-radius: 12px;
+            padding: 1.35rem 1.55rem;
+            transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s;
+            animation: rise .65s var(--ease) both;
+            animation-delay: calc(.6s + var(--i, 0) * .07s);
         }
 
         .msg:hover {
-            transform: translateY(-3px);
-            border-color: rgba(91, 140, 255, .4);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 20px 48px rgba(0, 0, 0, .4);
-        }
-
-        .msg:hover::before {
-            background: var(--a1);
-            box-shadow: 0 0 12px rgba(91, 140, 255, .9);
+            transform: translateY(-2px);
+            border-color: var(--line-strong);
+            box-shadow: var(--shadow-hover);
         }
 
         .msg.is-new {
-            border-color: rgba(91, 140, 255, .4);
+            border-color: rgba(37, 99, 235, .42);
         }
 
         .msg.is-new::before {
-            background: var(--a1);
-            box-shadow: 0 0 14px rgba(91, 140, 255, 1);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .msg.is-new .tag {
-            display: inline-flex;
-            align-items: center;
+            content: 'NEW';
+            position: absolute;
+            top: -9px;
+            right: 1.4rem;
             font-family: 'DM Mono', Consolas, monospace;
-            font-size: .6rem;
-            letter-spacing: .16em;
-            color: var(--a3);
-            background: rgba(52, 211, 153, .12);
-            border: 1px solid rgba(52, 211, 153, .4);
-            padding: .22rem .6rem;
+            font-size: .55rem;
+            letter-spacing: .2em;
+            color: #fff;
+            background: var(--gold);
+            padding: .18rem .55rem;
             border-radius: 999px;
-            margin-left: .6rem;
-            vertical-align: 2px;
         }
 
         .msg-head {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             gap: 1rem;
             flex-wrap: wrap;
-            margin-bottom: .55rem;
+            margin-bottom: .65rem;
         }
 
         .msg-head .who {
             display: flex;
             align-items: center;
-            gap: .75rem;
+            gap: .8rem;
             min-width: 0;
         }
 
         .msg-head .ava {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             flex: none;
             display: grid;
             place-items: center;
             font-weight: 800;
             font-size: .85rem;
-            color: #fff;
-            background: linear-gradient(135deg, var(--a1), var(--a2));
-            box-shadow: 0 5px 16px rgba(91, 140, 255, .3), inset 0 1px 0 rgba(255, 255, 255, .4);
+            color: var(--paper);
+            background: #2563eb;
             transition: transform .35s var(--ease);
         }
 
         .msg:hover .ava {
-            transform: scale(1.08) rotate(-5deg);
+            transform: scale(1.06);
         }
 
         .msg-head .who b {
-            font-size: .95rem;
+            font-size: .94rem;
         }
 
         .msg-head .who .em {
             color: var(--faint);
-            font-weight: 400;
             font-size: .8rem;
+            font-weight: 400;
         }
 
         .msg-head time {
             color: var(--faint);
-            font-size: .7rem;
+            font-size: .68rem;
             font-family: 'DM Mono', Consolas, monospace;
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid var(--line);
-            padding: .28rem .65rem;
-            border-radius: 999px;
             white-space: nowrap;
+            padding-top: .35rem;
         }
 
         .msg p.msg-body {
-            color: var(--dim);
+            color: var(--soft);
             font-size: .9rem;
             line-height: 1.7;
-            margin: 0 0 .8rem;
+            margin: 0 0 .9rem;
             white-space: pre-wrap;
         }
 
-        .msg a.mail {
+        .msg a.mail, .msg button.mail {
             display: inline-flex;
             align-items: center;
             gap: .45rem;
-            color: var(--a1);
+            font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+            cursor: pointer;
+            color: var(--ink);
             font-size: .78rem;
             font-weight: 700;
             text-decoration: none;
-            padding: .45rem .95rem;
+            padding: .5rem 1.05rem;
+            border: 1px solid var(--line-strong);
+            background: transparent;
             border-radius: 999px;
-            background: rgba(91, 140, 255, .1);
-            border: 1px solid rgba(91, 140, 255, .35);
-            transition: background .25s, transform .2s, box-shadow .25s, color .25s;
+            position: relative;
+            overflow: hidden;
+            transition: color .3s, border-color .3s, transform .25s var(--ease);
         }
 
-        .msg a.mail:hover {
-            background: linear-gradient(120deg, var(--a1), var(--a2));
-            color: #fff;
+        .msg a.mail::before, .msg button.mail::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--ink);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .35s var(--ease);
+            z-index: 0;
+        }
+
+        .msg a.mail:hover::before, .msg button.mail:hover::before {
+            transform: scaleX(1);
+        }
+
+        .msg a.mail:hover, .msg button.mail:hover {
+            color: var(--paper);
+            border-color: var(--ink);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(91, 140, 255, .35);
         }
 
-        .msg a.mail:focus-visible {
-            outline: 2px solid var(--amber);
+        .msg a.mail span, .msg button.mail span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .msg a.mail:focus-visible, .msg button.mail:focus-visible {
+            outline: 2px solid var(--gold);
             outline-offset: 2px;
         }
 
-        /* empty */
+        /* ---------- empty ---------- */
         .empty {
-            border: 1px dashed var(--line-hi);
-            border-radius: 22px;
-            padding: 3.4rem 2rem;
+            border: 1px dashed var(--line-strong);
+            border-radius: 16px;
+            padding: 3.6rem 2rem;
             text-align: center;
-            color: var(--faint);
-            background: rgba(255, 255, 255, .03);
-            animation: rise .6s .5s var(--ease) both;
+            color: var(--soft);
+            animation: rise .7s .55s var(--ease) both;
         }
 
         .empty .big {
-            font-size: 2.4rem;
             display: inline-grid;
             place-items: center;
-            width: 76px;
-            height: 76px;
-            border-radius: 24px;
-            background: linear-gradient(135deg, rgba(91, 140, 255, .14), rgba(139, 92, 246, .1));
-            border: 1px solid rgba(91, 140, 255, .3);
+            font-size: 2rem;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            border: 1px solid var(--line-strong);
             margin-bottom: 1rem;
-            filter: drop-shadow(0 0 22px rgba(91, 140, 255, .4));
-            animation: float-y 3.4s ease-in-out infinite;
+            animation: breathe 3.6s ease-in-out infinite;
         }
 
-        @keyframes float-y {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-9px);
-            }
-        }
-
-        /* footer */
+        /* ---------- footer ---------- */
         .foot {
             margin-top: 3rem;
-            padding-top: 1.4rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--line);
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 1rem;
+            flex-wrap: wrap;
             color: var(--faint);
             font-size: .74rem;
-            flex-wrap: wrap;
-            animation: rise .6s .6s var(--ease) both;
+            animation: fade-in 1s .7s var(--ease) both;
         }
 
         .foot .mono {
             font-family: 'DM Mono', Consolas, monospace;
-            letter-spacing: .12em;
+            letter-spacing: .14em;
             text-transform: uppercase;
-            font-size: .62rem;
+            font-size: .6rem;
         }
 
         .foot .grad {
-            background: linear-gradient(90deg, var(--a1), var(--a2), var(--a3));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--gold);
             font-weight: 700;
+        }
+
+        /* ===================== keyframes ===================== */
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes grow {
+            from {
+                transform: scaleY(0);
+            }
+
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+        @keyframes draw-x {
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                opacity: .45;
+                transform: scale(.9);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.08);
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1195,33 +887,54 @@ function timeAgo(string $ts): string
             }
         }
 
-        @media (max-width: 980px) {
+        /* ===================== responsive ===================== */
+        @media (max-width: 900px) {
+            .shell {
+                flex-direction: column;
+            }
+
             .side {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+                padding: 1.4rem 1.4rem 1.2rem;
+            }
+
+            .side .spacer,
+            .side .who {
                 display: none;
+            }
+
+            .side nav {
+                flex-direction: row;
+                margin-top: .6rem;
+            }
+
+            .side nav a.active::before {
+                left: 25%;
+                right: 25%;
+                top: auto;
+                bottom: -1px;
+                width: auto;
+                height: 2px;
             }
 
             .main {
-                padding: 0 1.2rem 4rem;
-            }
-
-            .msgs::before,
-            .msg::before {
-                display: none;
-            }
-
-            .msg {
-                margin-left: 0;
+                padding: 1.8rem 1.4rem 4rem;
             }
         }
 
         @media (max-width: 640px) {
-            .topbar .crumb {
+            .topbar .date {
                 display: none;
             }
 
             .panel,
-            .msg {
-                padding: 1.1rem 1rem;
+            .msg,
+            .stat {
+                padding: 1.15rem 1.1rem;
             }
 
             .chart {
@@ -1229,101 +942,422 @@ function timeAgo(string $ts): string
                 height: 100px;
             }
 
-            .chart .col:nth-child(even) .cap {
+            .chart-caps span:nth-child(even) {
                 visibility: hidden;
             }
+        }
+    </style>
+    <style>
+        /* Dashboard refresh: a restrained application interface, not a decorative landing page. */
+        :root {
+            --bg: #f3f5f9;
+            --paper: #ffffff;
+            --ink: #172033;
+            --soft: #5e6b80;
+            --faint: #8793a8;
+            --line: #e4e9f1;
+            --line-strong: #ccd6e4;
+            --gold: #2473e8;
+            --gold-soft: #eaf3ff;
+            --green: #0a9a75;
+            --shadow: 0 2px 6px rgba(20, 35, 60, .025), 0 12px 28px rgba(20, 35, 60, .05);
+            --shadow-hover: 0 16px 34px rgba(20, 35, 60, .09);
+        }
+
+        body.dash { background: var(--bg); }
+        .paper-grain { display: none; }
+        .adm-progress { height: 3px; background: #2473e8; }
+
+        .side {
+            width: 258px;
+            padding: 1.5rem 1rem;
+            background: #111c31;
+            border-right: 0;
+            box-shadow: none;
+        }
+
+        .side .brand {
+            align-items: center;
+            gap: .7rem;
+            margin: .15rem .55rem 1.65rem;
+        }
+
+        .side .brand::before {
+            content: 'C';
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: #2473e8;
+            color: #fff;
+            font: 800 .95rem/1 'Manrope', sans-serif;
+            box-shadow: 0 6px 14px rgba(36, 115, 232, .28);
+        }
+
+        .side .brand b {
+            font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: -.03em;
+        }
+
+        .side .brand small { color: #81b2ff; font-size: .5rem; }
+        .side .hairline { margin: 0 .55rem 1rem; background: rgba(255, 255, 255, .1); }
+        .side nav { gap: .3rem; }
+        .side nav a { padding: .78rem .85rem; border-radius: 8px; color: #aebbd0; }
+        .side nav a:hover { background: rgba(255, 255, 255, .07); transform: none; }
+        .side nav a.active { background: #2473e8; box-shadow: 0 7px 15px rgba(0, 0, 0, .13); }
+        .side nav a.active::before { display: none; }
+        .side nav a .cnt { color: #fff; font-size: .64rem; }
+        .side .who { margin: 1rem .55rem 0; padding-top: 1rem; }
+        .side .who span { color: #91a0b8; }
+        .side .out { margin: .9rem .55rem 0; justify-content: center; color: #d9e2f0; }
+
+        .main { max-width: 1440px; padding: 1.75rem 3rem 4rem; }
+        .topbar { margin-bottom: 1.25rem; }
+        .topbar .date { color: #6d7b91; font-weight: 500; letter-spacing: .1em; }
+        .live-chip { box-shadow: 0 1px 2px rgba(20, 35, 60, .04); }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.45rem;
+            padding: 2.35rem 2.5rem;
+            border-radius: 14px;
+            background: #172a46;
+            color: #fff;
+            box-shadow: 0 14px 28px rgba(19, 42, 76, .14);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            right: -70px;
+            bottom: -110px;
+            width: 310px;
+            height: 310px;
+            border: 50px solid rgba(86, 157, 255, .11);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero .eyebrow { color: #9bc2ff; margin-bottom: .8rem; }
+        .hero .eyebrow::after { background: #8bb9ff; }
+        .hero h1 { max-width: 680px; color: #fff; font-size: clamp(2rem, 3.5vw, 2.9rem); }
+        .hero h1 em { color: #94c0ff; }
+        .hero p.lede { position: relative; z-index: 1; max-width: 600px; color: #c3d0e2; }
+
+        .stats { gap: 1rem; margin-bottom: 1.5rem; }
+        .stat { padding: 1.35rem 1.4rem; border-radius: 12px; box-shadow: var(--shadow); }
+        .stat:hover { transform: translateY(-2px); }
+        .stat::after { left: 1.4rem; right: 1.4rem; height: 3px; }
+        .stat .lbl { margin-bottom: .85rem; color: #718096; }
+        .stat b.num { font-size: 2.35rem; }
+
+        .panel { margin-bottom: 2rem; padding: 1.5rem; border-radius: 12px; }
+        .panel-head { margin-bottom: 1.25rem; }
+        .panel-head h2, .inbox-head h2 { font-size: 1rem; letter-spacing: -.02em; }
+        .chart { height: 160px; padding: 0 .35rem .1rem; gap: 1rem; }
+        .chart .bar { border-radius: 5px 5px 1px 1px; background: #a8cbfb; }
+        .chart .bar.is-today { background: #2473e8; }
+        .chart .bar:hover { filter: brightness(.93); }
+        .chart-caps { padding: 0 .35rem; }
+
+        .inbox-head { margin-bottom: 1rem; }
+        .inbox-head .badge { background: transparent; color: #718096; }
+        .message-filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            align-items: end;
+            gap: .85rem;
+            margin: 0 0 1.25rem;
+            padding: 1rem 1.15rem;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--paper);
+        }
+        .filter-field { display: grid; gap: .38rem; }
+        .filter-field label {
+            color: #728096;
+            font-size: .67rem;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+        .filter-field input, .filter-field select {
+            width: 100%;
+            min-height: 38px;
+            border: 1px solid var(--line-strong);
+            border-radius: 7px;
+            background: #fff;
+            color: var(--ink);
+            padding: .45rem .65rem;
+            font: 600 .78rem 'Manrope', sans-serif;
+            outline: none;
+        }
+        .filter-field input:focus, .filter-field select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+        .filter-actions { display: flex; align-items: center; gap: .65rem; }
+        .filter-apply, .filter-reset {
+            min-height: 38px;
+            border-radius: 7px;
+            padding: 0 .85rem;
+            font: 700 .76rem 'Manrope', sans-serif;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .filter-apply { border: 1px solid #2473e8; background: #2473e8; color: #fff; cursor: pointer; }
+        .filter-reset { display: inline-flex; align-items: center; color: #607087; }
+        .filter-reset:hover { color: #2473e8; }
+        .filter-summary { margin: -.3rem 0 1rem; color: #718096; font-size: .76rem; }
+        .msgs { gap: .75rem; }
+        .msg { padding: 1.25rem 1.4rem; border-radius: 10px; box-shadow: none; }
+        .msg:hover { transform: none; border-color: #bdd1ee; box-shadow: 0 6px 18px rgba(26, 55, 100, .06); }
+        .msg.is-new { border-left: 3px solid #2473e8; }
+        .msg.is-new::before { top: 1.15rem; right: 1.3rem; background: #eaf3ff; color: #2473e8; font-weight: 700; }
+        .msg-head .ava { width: 38px; height: 38px; background: #eaf3ff; color: #2473e8; border-radius: 9px; }
+        .msg:hover .ava { transform: none; }
+        .msg p.msg-body { max-width: 900px; color: #536176; }
+        .msg a.mail, .msg button.mail { color: #2473e8; border-color: #bdd4f7; background: #fff; border-radius: 7px; }
+        .msg a.mail::before, .msg button.mail::before { background: #2473e8; }
+        .msg a.mail:hover, .msg button.mail:hover { border-color: #2473e8; }
+        .foot { margin-top: 2.25rem; }
+
+        @media (max-width: 900px) {
+            .side { width: 100%; padding: 1rem; }
+            .side .brand { margin: .15rem .35rem .75rem; }
+            .side .hairline { display: none; }
+            .side nav a { padding: .65rem .75rem; }
+            .main { padding: 1.3rem 1.25rem 3rem; }
+            .hero { padding: 1.8rem 1.5rem; }
+        }
+
+        @media (max-width: 640px) {
+            .hero { border-radius: 10px; }
+            .hero h1 { font-size: 1.85rem; }
+            .chart { gap: .45rem; }
+            .message-filters { grid-template-columns: 1fr; align-items: stretch; }
+            .filter-actions { justify-content: space-between; }
+
+        /* ---------- reply panel ---------- */
+        .reply-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .45);
+            backdrop-filter: blur(2px);
+            z-index: 290;
+            animation: fade-in .25s var(--ease) both;
+        }
+
+        .reply-panel {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            top: 0;
+            width: min(520px, 100%);
+            background: var(--paper);
+            z-index: 300;
+            box-shadow: -18px 0 48px rgba(18, 32, 55, .18);
+            display: flex;
+            flex-direction: column;
+            padding: 1.8rem 1.9rem;
+            animation: slide-in .35s var(--ease) both;
+        }
+
+        @keyframes slide-in {
+            from { transform: translateX(40px); opacity: 0; }
+            to   { transform: none; opacity: 1; }
+        }
+
+        .reply-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 1.2rem;
+        }
+
+        .reply-eyebrow {
+            margin: 0 0 .3rem;
+            font-family: 'DM Mono', Consolas, monospace;
+            font-size: .6rem;
+            letter-spacing: .26em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        .reply-head h2 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -.02em;
+        }
+
+        .reply-email {
+            margin: .3rem 0 0;
+            color: var(--faint);
+            font-size: .8rem;
+            word-break: break-all;
+        }
+
+        .reply-close {
+            flex: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: transparent;
+            color: var(--soft);
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: background .2s, color .2s, border-color .2s;
+        }
+
+        .reply-close:hover {
+            color: var(--ink);
+            border-color: var(--line-strong);
+            background: rgba(15, 23, 42, .04);
+        }
+
+        .reply-quote {
+            border-left: 3px solid var(--line-strong);
+            padding: .55rem .9rem;
+            margin-bottom: 1.2rem;
+            color: var(--soft);
+            font-size: .8rem;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            max-height: 130px;
+            overflow: auto;
+        }
+
+        #replyText {
+            width: 100%;
+            resize: vertical;
+            min-height: 150px;
+            border: 1px solid var(--line-strong);
+            border-radius: 9px;
+            padding: .8rem .95rem;
+            font: 500 .86rem/1.6 'Manrope', sans-serif;
+            color: var(--ink);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        #replyText:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-soft);
+        }
+
+        .reply-actions {
+            display: flex;
+            align-items: center;
+            gap: .55rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .reply-hint {
+            color: var(--faint);
+            font-size: .72rem;
+            font-weight: 700;
+        }
+
+        .reply-send {
+            cursor: pointer;
+            border: 1px solid var(--gold);
+            background: var(--gold);
+            color: #fff;
+            border-radius: 7px;
+            padding: .55rem .95rem;
+            font: 700 .76rem 'Manrope', sans-serif;
+            transition: background .2s, border-color .2s, transform .2s var(--ease);
+        }
+
+        .reply-send:hover { transform: translateY(-1px); filter: brightness(1.08); }
+
+        .reply-send.alt {
+            background: transparent;
+            color: var(--gold);
+        }
+
+        .reply-send.alt:hover { background: var(--gold-soft); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reply-panel, .reply-overlay { animation: none !important; }
+        }
         }
     </style>
 </head>
 
 <body class="dash">
     <div class="adm-progress" id="admProgress" aria-hidden="true"></div>
-
-    <div class="fx" aria-hidden="true">
-        <div class="blob b1"></div>
-        <div class="blob b2"></div>
-        <div class="blob b3"></div>
-        <div class="grid"></div>
-        <div class="noise"></div>
-    </div>
+    <div class="paper-grain" aria-hidden="true"></div>
 
     <div class="shell">
         <aside class="side">
-            <div class="logo">
-                <span class="mark" aria-hidden="true">C</span>
-                <span><b>Comcares</b><small>CONTROL PANEL</small></span>
+            <div class="brand">
+                <b>Comcares</b>
+                <small>ADMIN</small>
             </div>
-            <p class="nav-label">Menu</p>
+            <div class="hairline"></div>
             <nav>
-                <a class="nav-item active" href="dashboard.php" aria-current="page">
-                    <span class="ic" aria-hidden="true">&#9636;</span> Dashboard
-                </a>
-                <a class="nav-item" href="#inbox">
-                    <span class="ic" aria-hidden="true">&#9993;</span> Inbox
-                    <span class="count"><?= $total ?></span>
-                </a>
+                <a class="active" href="dashboard.php" aria-current="page">&#9636;&ensp;Enquiries <span class="cnt"><?= $total ?></span></a>
+                <?php
+                $adminCounts = [
+                    'quotations' => (int)db()->query('SELECT COUNT(*) FROM quotations')->fetchColumn(),
+                    'purchases'  => (int)db()->query('SELECT COUNT(*) FROM purchases')->fetchColumn(),
+                    'chats'      => (int)db()->query('SELECT COUNT(*) FROM chat_sessions')->fetchColumn(),
+                    'users'      => (int)db()->query('SELECT COUNT(*) FROM users')->fetchColumn(),
+                ];
+                ?>
+                <a href="quotations.php">&#128196;&ensp;Quotations <span class="cnt"><?= $adminCounts['quotations'] ?></span></a>
+                <a href="purchases.php">&#128722;&ensp;Purchases <span class="cnt"><?= $adminCounts['purchases'] ?></span></a>
+                <a href="chats.php">&#128172;&ensp;Chatbot <span class="cnt"><?= $adminCounts['chats'] ?></span></a>
+                <a href="users.php">&#128100;&ensp;Users <span class="cnt"><?= $adminCounts['users'] ?></span></a>
             </nav>
             <div class="spacer"></div>
-            <div class="me">
-                <span class="ava" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr($_SESSION['admin_name'], 0, 1))) ?></span>
-                <span>
-                    <b><?= htmlspecialchars($_SESSION['admin_name']) ?></b>
-                    <span>Signed in</span>
-                </span>
+            <div class="who">
+                <b><?= htmlspecialchars($_SESSION['admin_name']) ?></b>
+                <span>Signed in as administrator</span>
             </div>
-            <a class="out" href="dashboard.php?action=logout"><span aria-hidden="true">&#10140;</span> Logout</a>
+            <a class="out" href="dashboard.php?action=logout">&#10140;&ensp;Sign out</a>
         </aside>
 
         <main class="main">
             <div class="topbar">
-                <div class="crumb">
-                    <b>Admin</b> <span class="sep">&#8250;</span> Dashboard <span class="sep">&#8250;</span> Contact Enquiries
-                </div>
-                <span class="live-chip"><span class="dot"></span><span id="clock" aria-label="Current time">&mdash;:&mdash;</span></span>
+                <span class="date" id="dateLine"></span>
+                <span class="live-chip"><span class="dot"></span><span id="clock">&mdash;:&mdash;</span></span>
             </div>
 
             <div class="hero">
-                <p class="kicker"><span class="d"></span> Live overview</p>
-                <h1>Recent contact <em>enquiries.</em></h1>
-                <p class="lede">Everyone who has recently contacted you through the website's contact form &mdash; newest first.</p>
+                <p class="eyebrow">Contact Enquiries</p>
+                <h1>Everything your visitors <em>said to you.</em></h1>
+                <p class="lede">A calm, simple record of every message received through the website &mdash; newest first, nothing in the way.</p>
             </div>
 
             <div class="stats">
-                <div class="stat" style="--c: var(--a1)">
-                    <div class="head">
-                        <span class="ic" aria-hidden="true">&#9993;</span>
-                        <div class="spark" aria-hidden="true">
-                            <i style="height:35%; animation-delay:.5s"></i><i style="height:60%; animation-delay:.58s"></i><i style="height:45%; animation-delay:.66s"></i><i style="height:80%; animation-delay:.74s"></i><i style="height:100%; animation-delay:.82s"></i>
-                        </div>
-                    </div>
+                <div class="stat" style="--c: var(--gold)">
+                    <span class="lbl"><i class="ic" aria-hidden="true">&#9993;</i> Total messages</span>
                     <b class="num"><?= $total ?></b>
-                    <span class="lbl">Total messages received</span>
+                    <span class="sub">All enquiries received to date</span>
                 </div>
-                <div class="stat" style="--c: var(--a3)">
-                    <div class="head">
-                        <span class="ic" aria-hidden="true">&#9788;</span>
-                        <div class="ring" aria-hidden="true">
-                            <svg width="46" height="46" viewBox="0 0 46 46">
-                                <circle class="track" cx="23" cy="23" r="20"></circle>
-                                <circle class="fill" cx="23" cy="23" r="20" style="--dash: <?= $total > 0 ? max(125.6 - (125.6 * $today / max($total, 1)), 110) : 125.6 ?>"></circle>
-                            </svg>
-                            <b><?= $today ?>/<?= $total ?></b>
-                        </div>
-                    </div>
+                <div class="stat" style="--c: var(--green)">
+                    <span class="lbl"><i class="ic" aria-hidden="true">&#9788;</i> Today</span>
                     <b class="num"><?= $today ?></b>
-                    <span class="lbl">Received today</span>
+                    <span class="sub">Arrived since midnight</span>
                 </div>
-                <div class="stat" style="--c: var(--a2)">
-                    <div class="head">
-                        <span class="ic" aria-hidden="true">&#9201;</span>
-                    </div>
-                    <b class="num" style="font-size:1.5rem; padding-top:.5rem;"><?= $latest ? htmlspecialchars($latest['name']) : '&mdash;' ?></b>
-                    <span class="lbl"><?= $latest ? 'Most recent &middot; ' . timeAgo($latest['created_at']) : 'No messages yet' ?></span>
+                <div class="stat" style="--c: var(--ink)">
+                    <span class="lbl"><i class="ic" aria-hidden="true">&#9201;</i> Latest</span>
+                    <b class="num" style="font-size:1.7rem; padding-top:.6rem;"><?= $latest ? htmlspecialchars($latest['name']) : '&mdash;' ?></b>
+                    <span class="sub"><?= $latest ? 'Most recent &middot; ' . timeAgo($latest['created_at']) : 'No messages yet' ?></span>
                 </div>
             </div>
 
             <?php
-            // last-7-days activity for the chart (visualises the same inbox data)
+            // last-7-days activity for the chart
             $days = [];
             for ($i = 6; $i >= 0; $i--) {
                 $d = date('Y-m-d', strtotime("-$i days"));
@@ -1337,25 +1371,59 @@ function timeAgo(string $ts): string
             ?>
             <section class="panel">
                 <div class="panel-head">
-                    <h2><i aria-hidden="true">&#9636;</i> Activity &mdash; last 7 days</h2>
+                    <h2>This week&rsquo;s activity</h2>
                     <span class="meta">peak <?= $peak ?>/day</span>
                 </div>
                 <div class="chart" role="img" aria-label="Messages received per day over the last seven days">
                     <?php foreach ($days as $d): ?>
                         <div class="col">
-                            <div class="bar <?= $d['today'] ? 'is-today' : '' ?>" style="height: <?= max(4, round($d['count'] / $peak * 100)) ?>%; animation-delay: <?= number_format(0.55 + 0.06 * 0, 2) ?>s;">
+                            <div class="bar <?= $d['today'] ? 'is-today' : '' ?>" style="height: <?= max(3, round($d['count'] / $peak * 100)) ?>%;">
                                 <span class="tip"><?= $d['count'] ?> message<?= $d['count'] === 1 ? '' : 's' ?></span>
                             </div>
-                            <span class="cap"><?= $d['label'] ?></span>
                         </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="chart-caps">
+                    <?php foreach ($days as $d): ?>
+                        <span><?= $d['label'] ?></span>
                     <?php endforeach; ?>
                 </div>
             </section>
 
-            <div class="inbox-label" id="inbox">
-                <h2><i aria-hidden="true">&#9993;</i> Inbox</h2>
-                <span class="badge"><b><?= $total ?></b> message<?= $total === 1 ? '' : 's' ?> &middot; newest first</span>
+            <div class="inbox-head" id="inbox">
+                <h2>The inbox</h2>
+                <span class="badge"><?= $total ?> message<?= $total === 1 ? '' : 's' ?> &middot; newest first</span>
             </div>
+
+            <form class="message-filters" method="get" action="dashboard.php" aria-label="Filter contact messages">
+                <div class="filter-field">
+                    <label for="filter-date">Specific date</label>
+                    <input type="date" id="filter-date" name="date" value="<?= htmlspecialchars($filterDate) ?>">
+                </div>
+                <div class="filter-field">
+                    <label for="filter-month">Month</label>
+                    <input type="month" id="filter-month" name="month" value="<?= htmlspecialchars($filterMonth) ?>">
+                </div>
+                <div class="filter-field">
+                    <label for="filter-day">Day of week</label>
+                    <select id="filter-day" name="day">
+                        <option value="">Every day</option>
+                        <?php foreach ($weekdays as $day): ?>
+                            <option value="<?= $day ?>" <?= $filterDay === $day ? 'selected' : '' ?>><?= ucfirst($day) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="filter-apply" type="submit">Apply filters</button>
+                    <?php if ($filterDate || $filterMonth || $filterDay): ?>
+                        <a class="filter-reset" href="dashboard.php">Clear</a>
+                    <?php endif; ?>
+                </div>
+            </form>
+
+            <?php if ($filterDate || $filterMonth || $filterDay): ?>
+                <p class="filter-summary">Showing <?= $total ?> saved message<?= $total === 1 ? '' : 's' ?> matching your filter<?= ($filterDate && $filterMonth) || $filterDay ? 's' : '' ?>.</p>
+            <?php endif; ?>
 
             <?php if (!$messages): ?>
                 <div class="empty">
@@ -1370,23 +1438,52 @@ function timeAgo(string $ts): string
                                 <div class="who">
                                     <span class="ava" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr($msg['name'], 0, 1))) ?></span>
                                     <span>
-                                        <b><?= htmlspecialchars($msg['name']) ?></b><?= $i === 0 ? '<span class="tag">NEW</span>' : '' ?><br>
+                                        <b><?= htmlspecialchars($msg['name']) ?></b><br>
                                         <span class="em">&lt;<?= htmlspecialchars($msg['email']) ?>&gt;</span>
                                     </span>
                                 </div>
                                 <time title="<?= htmlspecialchars($msg['created_at']) ?>"><?= timeAgo($msg['created_at']) ?></time>
                             </div>
                             <p class="msg-body"><?= htmlspecialchars($msg['message']) ?></p>
-                            <a class="mail" href="mailto:<?= htmlspecialchars($msg['email']) ?>?subject=Re: your enquiry to Comcares">&#9993; Reply to this person</a>
+                            <button type="button" class="mail" data-reply
+                                    data-name="<?= htmlspecialchars($msg['name']) ?>"
+                                    data-email="<?= htmlspecialchars($msg['email']) ?>"
+                                    data-message="<?= htmlspecialchars($msg['message']) ?>"
+                                    data-sent="<?= htmlspecialchars($msg['created_at']) ?>">
+                                <span>&#9993; Reply to this person</span>
+                            </button>
                         </article>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
             <div class="foot">
-                <span class="mono">Comcares Admin &middot; Control Panel</span>
-                <span>Designed for <span class="grad">speed &amp; clarity</span>
+                <span class="mono">Comcares &middot; Admin Panel</span>
+                <span>Designed for <span class="grad">speed &amp; clarity</span></span>
             </div>
+
+            <!-- reply panel -->
+            <div class="reply-overlay" id="replyOverlay" hidden></div>
+            <section class="reply-panel" id="replyPanel" role="dialog" aria-modal="true" aria-labelledby="replyTitle" hidden>
+                <header class="reply-head">
+                    <div>
+                        <p class="reply-eyebrow">Reply to enquiry</p>
+                        <h2 id="replyTitle">&mdash;</h2>
+                        <p class="reply-email" id="replyEmail">&mdash;</p>
+                    </div>
+                    <button type="button" class="reply-close" id="replyClose" aria-label="Close reply panel">&times;</button>
+                </header>
+                <div class="reply-quote" id="replyQuote"></div>
+                <form id="replyForm">
+                    <textarea id="replyText" rows="7" placeholder="Type your reply&hellip;"></textarea>
+                    <div class="reply-actions">
+                        <span class="reply-hint">Choose how to send:</span>
+                        <button type="button" class="reply-send" data-mode="gmail">Open in Gmail</button>
+                        <button type="button" class="reply-send alt" data-mode="mailapp">System mail app</button>
+                        <button type="button" class="reply-send alt" data-mode="copy">Copy email</button>
+                    </div>
+                </form>
+            </section>
         </main>
     </div>
 
@@ -1394,7 +1491,6 @@ function timeAgo(string $ts): string
         (function() {
             "use strict";
             var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-            var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
             /* scroll progress */
             var bar = document.getElementById("admProgress");
@@ -1409,12 +1505,19 @@ function timeAgo(string $ts): string
             });
             onScroll();
 
-            /* live clock chip */
+            /* date + live clock */
             var clock = document.getElementById("clock");
+            var dateLine = document.getElementById("dateLine");
+            var now = new Date();
+            if (dateLine) dateLine.textContent = now.toLocaleDateString([], {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
 
             function tickClock() {
-                var d = new Date();
-                clock.textContent = d.toLocaleTimeString([], {
+                clock.textContent = new Date().toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit"
                 });
@@ -1429,50 +1532,103 @@ function timeAgo(string $ts): string
             document.querySelectorAll(".stat b.num").forEach(function(el) {
                 var goal = parseInt(el.textContent, 10);
                 if (isNaN(goal) || goal === 0 || reduce) return;
+                el.textContent = "0";
                 var start = null;
 
                 function tick(now) {
                     if (start === null) start = now;
-                    var p = Math.min((now - start) / 1300, 1);
+                    var p = Math.min((now - start) / 1200, 1);
                     el.textContent = Math.round(easeOut(p) * goal);
                     if (p < 1) requestAnimationFrame(tick);
                 }
-                el.textContent = "0";
                 requestAnimationFrame(tick);
             });
 
-            /* cursor spotlight on cards */
-            if (fine && !reduce) {
-                var raf = 0,
-                    ev = null;
-                document.addEventListener("pointermove", function(e) {
-                    ev = e;
-                    if (raf) return;
-                    raf = requestAnimationFrame(function() {
-                        raf = 0;
-                        document.querySelectorAll(".stat, .panel").forEach(function(c) {
-                            var r = c.getBoundingClientRect();
-                            if (ev.clientX < r.left - 80 || ev.clientX > r.right + 80 ||
-                                ev.clientY < r.top - 80 || ev.clientY > r.bottom + 80) return;
-                            c.style.setProperty("--mx", (ev.clientX - r.left) + "px");
-                            c.style.setProperty("--my", (ev.clientY - r.top) + "px");
-                        });
+            /* staggered reveal for below-the-fold cards */
+            if (!reduce) {
+                var io = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(en) {
+                        if (en.isIntersecting) {
+                            en.target.style.animationPlayState = "running";
+                            io.unobserve(en.target);
+                        }
                     });
                 }, {
-                    passive: true
+                    threshold: .12
                 });
-
-                /* aurora parallax */
-                var b1 = document.querySelector(".fx .b1");
-                var b2 = document.querySelector(".fx .b2");
-                window.addEventListener("scroll", function() {
-                    var y = window.scrollY;
-                    if (b1) b1.style.translate = "0 " + y * 0.05 + "px";
-                    if (b2) b2.style.translate = "0 " + y * -0.08 + "px";
-                }, {
-                    passive: true
+                document.querySelectorAll(".msg").forEach(function(m) {
+                    m.style.animationPlayState = "paused";
+                    io.observe(m);
                 });
             }
+
+            /* ---------- reply panel ---------- */
+            var overlay = document.getElementById("replyOverlay");
+            var panel = document.getElementById("replyPanel");
+            var closeBtn = document.getElementById("replyClose");
+            var tName = document.getElementById("replyTitle");
+            var tEmail = document.getElementById("replyEmail");
+            var tQuote = document.getElementById("replyQuote");
+            var tText = document.getElementById("replyText");
+            var current = { name: "", email: "" };
+
+            function esc(s) {
+                var d = document.createElement("div");
+                d.textContent = s == null ? "" : String(s);
+                return d.textContent;
+            }
+
+            function openReply(btn) {
+                current.name = btn.dataset.name || "";
+                current.email = btn.dataset.email || "";
+                var sent = btn.dataset.sent || "";
+                var body = btn.dataset.message || "";
+                tName.textContent = current.name;
+                tEmail.textContent = current.email;
+                tQuote.textContent = "On " + sent + ", " + current.name + " wrote:\n\n" + body;
+                tText.value = "Hi " + current.name + ",\n\nThank you for reaching out to Comcares. ";
+                overlay.hidden = false;
+                panel.hidden = false;
+                document.body.style.overflow = "hidden";
+                setTimeout(function() { tText.focus(); }, 80);
+            }
+
+            function closeReply() {
+                overlay.hidden = true;
+                panel.hidden = true;
+                document.body.style.overflow = "";
+            }
+
+            document.querySelectorAll("[data-reply]").forEach(function(btn) {
+                btn.addEventListener("click", function() { openReply(btn); });
+            });
+
+            if (closeBtn) closeBtn.addEventListener("click", closeReply);
+            if (overlay) overlay.addEventListener("click", closeReply);
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape" && !panel.hidden) closeReply();
+            });
+
+            document.querySelectorAll(".reply-send").forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    var subject = encodeURIComponent("Re: your enquiry to Comcares");
+                    var quoted = tQuote.textContent.split("\n").map(function(l) { return "> " + l; }).join("\n");
+                    var body = encodeURIComponent(tText.value + "\n\n\n------\n" + quoted);
+                    var mode = btn.dataset.mode;
+
+                    if (mode === "gmail") {
+                        window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(current.email) + "&su=" + subject + "&body=" + body, "_blank");
+                    } else if (mode === "mailapp") {
+                        window.location.href = "mailto:" + current.email + "?subject=" + subject + "&body=" + body;
+                    } else if (mode === "copy") {
+                        navigator.clipboard.writeText(current.email).then(function() {
+                            var old = btn.textContent;
+                            btn.textContent = "Copied!";
+                            setTimeout(function() { btn.textContent = old; }, 1400);
+                        });
+                    }
+                });
+            });
         })();
     </script>
 </body>

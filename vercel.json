@@ -4,42 +4,57 @@
       "runtime": "vercel-php@0.9.0"
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/",
-      "destination": "/api/router.php?path=index.php"
+      "src": "^/$",
+      "dest": "/api/router.php?path=index.php"
     },
     {
-      "source": "/index.php",
-      "destination": "/api/router.php?path=index.php"
+      "src": "^/index\\.php$",
+      "dest": "/api/router.php?path=index.php"
     },
     {
-      "source": "/about.php",
-      "destination": "/api/router.php?path=about.php"
+      "src": "^/about\\.php$",
+      "dest": "/api/router.php?path=about.php"
     },
     {
-      "source": "/services.php",
-      "destination": "/api/router.php?path=services.php"
+      "src": "^/services\\.php$",
+      "dest": "/api/router.php?path=services.php"
     },
     {
-      "source": "/products.php",
-      "destination": "/api/router.php?path=products.php"
+      "src": "^/products\\.php$",
+      "dest": "/api/router.php?path=products.php"
     },
     {
-      "source": "/contact.php",
-      "destination": "/api/router.php?path=contact.php"
+      "src": "^/contact\\.php$",
+      "dest": "/api/router.php?path=contact.php"
     },
     {
-      "source": "/login.php",
-      "destination": "/api/router.php?path=login.php"
+      "src": "^/login\\.php$",
+      "dest": "/api/router.php?path=login.php"
     },
     {
-      "source": "/logout.php",
-      "destination": "/api/router.php?path=logout.php"
+      "src": "^/forgot-password\\.php$",
+      "dest": "/api/router.php?path=forgot-password.php"
     },
     {
-      "source": "/api/chatbot.php",
-      "destination": "/api/router.php?path=api/chatbot.php"
+      "src": "^/reset-password\\.php$",
+      "dest": "/api/router.php?path=reset-password.php"
+    },
+    {
+      "src": "^/logout\\.php$",
+      "dest": "/api/router.php?path=logout.php"
+    },
+    {
+      "src": "^/api/chatbot\\.php$",
+      "dest": "/api/router.php?path=api/chatbot.php"
+    },
+    {
+      "src": "^/admin/(.*\\.php)$",
+      "dest": "/api/router.php?path=admin/$1"
+    },
+    {
+      "handle": "filesystem"
     }
   ]
 }

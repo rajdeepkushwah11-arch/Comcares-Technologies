@@ -103,6 +103,7 @@ $products = [
                         <div class="next-product-foot">
                             <a href="<?= $p['url'] ?>" class="next-service-link" aria-label="Explore <?= $p['name'] ?>"
                                 <?= $p['external'] ? 'target="_blank" rel="noopener"' : '' ?>>Explore <?= $p['name'] ?> <b>&nearr;</b></a>
+                            <a href="order.php?product=<?= str_replace('&', '&', $p['name']) ?>" class="next-service-link" style="margin-left:.9rem">Order <b>&nearr;</b></a>
                         </div>
                     </article>
                 <?php endforeach; ?>
