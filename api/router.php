@@ -25,6 +25,13 @@ $pages = [
     'forgot-password.php',
     'reset-password.php',
     'logout.php',
+    'admin/dashboard.php',
+    'admin/login.php',
+    'admin/status.php',
+    'admin/chats.php',
+    'admin/purchases.php',
+    'admin/quotations.php',
+    'admin/users.php',
 ];
 
 if (!in_array($path, $pages, true)) {

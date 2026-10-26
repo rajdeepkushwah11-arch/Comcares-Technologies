@@ -50,6 +50,10 @@
       "dest": "/api/router.php?path=api/chatbot.php"
     },
     {
+      "src": "^/admin/(.*\\.php)$",
+      "dest": "/api/router.php?path=admin/$1"
+    },
+    {
       "handle": "filesystem"
     }
   ]

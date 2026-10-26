@@ -1304,8 +1304,19 @@ function timeAgo(string $ts): string
             </div>
             <div class="hairline"></div>
             <nav>
-                <a class="active" href="dashboard.php" aria-current="page">&#9636;&ensp;Dashboard</a>
-                <a href="#inbox">&#9993;&ensp;Inbox <span class="cnt"><?= $total ?></span></a>
+                <a class="active" href="dashboard.php" aria-current="page">&#9636;&ensp;Enquiries <span class="cnt"><?= $total ?></span></a>
+                <?php
+                $adminCounts = [
+                    'quotations' => (int)db()->query('SELECT COUNT(*) FROM quotations')->fetchColumn(),
+                    'purchases'  => (int)db()->query('SELECT COUNT(*) FROM purchases')->fetchColumn(),
+                    'chats'      => (int)db()->query('SELECT COUNT(*) FROM chat_sessions')->fetchColumn(),
+                    'users'      => (int)db()->query('SELECT COUNT(*) FROM users')->fetchColumn(),
+                ];
+                ?>
+                <a href="quotations.php">&#128196;&ensp;Quotations <span class="cnt"><?= $adminCounts['quotations'] ?></span></a>
+                <a href="purchases.php">&#128722;&ensp;Purchases <span class="cnt"><?= $adminCounts['purchases'] ?></span></a>
+                <a href="chats.php">&#128172;&ensp;Chatbot <span class="cnt"><?= $adminCounts['chats'] ?></span></a>
+                <a href="users.php">&#128100;&ensp;Users <span class="cnt"><?= $adminCounts['users'] ?></span></a>
             </nav>
             <div class="spacer"></div>
             <div class="who">
