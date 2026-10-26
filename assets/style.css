@@ -27,7 +27,6 @@ body {
 .site-header {
   background: var(--dark);
   padding: 1rem 0;
-  margin-left: 100px;
 }
 .site-header .container {
   display: flex;
@@ -41,9 +40,6 @@ body {
   font-size: 1.3rem;
   font-weight: bold;
   text-decoration: none;
-}
-.site-header nav {
-    margin-left: 900px;
 }
 .site-header nav a {
   color: #cfd8e3;
@@ -4587,7 +4583,8 @@ input, button, textarea, select { max-width: 100%; }
 /* Collapse the navigation before it competes with the logo and account action on tablets. */
 @media (max-width: 900px) {
   .site-header .container { position: relative; min-height: 70px; }
-  .nav-toggle { display: grid; margin-left: auto; }
+  .nav-toggle,
+  body:has(.next-site) .nav-toggle { display: grid; margin-left: auto; }
   .site-header nav,
   body:has(.next-site) .site-header nav {
     display: none;

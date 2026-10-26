@@ -215,7 +215,7 @@
         var r = card.getBoundingClientRect();
         var x = (e.clientX - r.left) / r.width - 0.5;
         var y = (e.clientY - r.top) / r.height - 0.5;
-        card.style.transform =
+        card.style.transform = 
           "perspective(900px) rotateX(" +
           -y * 7 +
           "deg) rotateY(" +
