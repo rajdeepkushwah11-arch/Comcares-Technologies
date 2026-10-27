@@ -1,6 +1,6 @@
 </main>
 <footer class="site-footer">
-    <div class="container footer-container">
+    <div class="container">
         <div class="footer-main">
             <a href="index.php" class="footer-brand brand-lockup" aria-label="Comcares Innovation Services Private Limited, home">
                 <span class="brand-name">COMCARES</span>
@@ -34,6 +34,11 @@
 
 <div id="scrollProgress"></div>
 <div id="cursorGlow"></div>
+
+<!-- Scroll to top -->
+<button id="siteToTop" class="site-totop" aria-label="Back to top" title="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
 
 <!-- ============ COMCARES floating assistant ============ -->
 <div class="cc-chat-root" id="ccChat">
@@ -179,14 +184,41 @@
         })();
     }
 
+    /* ---------- Page-ready fade-in ---------- */
+    document.body.classList.add('page-ready');
+
     /* ---------- Scroll progress bar ---------- */
     var bar = document.getElementById('scrollProgress');
-    if (bar) {
-        window.addEventListener('scroll', function () {
-            var h = document.documentElement;
-            var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
-            bar.style.width = pct + '%';
-        }, { passive: true });
+    var toTop = document.getElementById('siteToTop');
+    function onScroll() {
+        var h = document.documentElement;
+        var pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+        if (bar) bar.style.width = pct + '%';
+        if (toTop) toTop.classList.toggle('is-visible', window.scrollY > 500);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ---------- Scroll-to-top ---------- */
+    if (toTop) {
+        toTop.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+        });
+    }
+
+    /* ---------- Page-transition fade ---------- */
+    if (!reduceMotion) {
+        document.querySelectorAll('a[href]').forEach(function (a) {
+            var href = a.getAttribute('href');
+            if (!href || href.charAt(0) === '#' || href.indexOf('mailto') === 0 ||
+                href.indexOf('http') === 0 || a.target === '_blank') return;
+            a.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.body.classList.remove('page-ready');
+                var dest = href;
+                setTimeout(function () { window.location.href = dest; }, 200);
+            });
+        });
     }
 
     /* ---------- Cursor glow ---------- */
@@ -264,9 +296,6 @@
             });
         }, { threshold: 0.16 });
         targets.forEach(function (element) { revealObserver.observe(element); });
-
-        /* Hero stat counters (.next-stats) are animated by the shared
-           assets/counters.js — a single system for the whole site. */
     } else {
         targets.forEach(function (element) { element.classList.add('next-in'); });
     }
