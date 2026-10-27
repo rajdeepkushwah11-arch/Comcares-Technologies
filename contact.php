@@ -45,9 +45,14 @@ $topics = ['New website', 'Custom software', 'School Sathi demo', 'Support &amp;
             <h1>Tell us what<br><em>you're building.</em></h1>
             <div class="next-hero-bottom">
                 <p>Share a little about the idea, the challenge, or the system you want to improve. We reply to every message within one working day.</p>
-                <div class="next-actions">
-                    <a href="#form" class="next-button next-button-brand next-ripple">Write to us <b>&darr;</b></a>
-                    <a href="mailto:hello@comcares.com" class="next-text-link">hello@comcares.com</a>
+                <div class="next-actions-row">
+                    <div class="next-actions">
+                        <a href="#form" class="next-button next-button-brand next-ripple">Write to us <b>&darr;</b></a>
+                        <a href="mailto:hello@comcares.com" class="next-text-link">hello@comcares.com</a>
+                    </div>
+                    <figure class="next-actions-visual" aria-hidden="true">
+                        <img src="images/hero-dashboard.svg" alt="" width="420" height="240" loading="lazy">
+                    </figure>
                 </div>
             </div>
         </div>

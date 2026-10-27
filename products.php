@@ -58,9 +58,14 @@ $products = [
             <h1>Products we<br><em>own and run.</em></h1>
             <div class="next-hero-bottom">
                 <p>Beyond client work, we design, build and maintain our own products — starting with School Sathi, our complete school management platform.</p>
-                <div class="next-actions">
-                    <a href="https://schoolsathi.in/hub/home" target="_blank" rel="noopener" class="next-button next-button-brand next-ripple">Visit School Sathi <b>&nearr;</b></a>
-                    <a href="#products" class="next-text-link">Browse products <b>&darr;</b></a>
+                <div class="next-actions-row">
+                    <div class="next-actions">
+                        <a href="https://schoolsathi.in/hub/home" target="_blank" rel="noopener" class="next-button next-button-brand next-ripple">Visit School Sathi <b>&nearr;</b></a>
+                        <a href="#products" class="next-text-link">Browse products <b>&darr;</b></a>
+                    </div>
+                    <figure class="next-actions-visual" aria-hidden="true">
+                        <img src="images/product-school.svg" alt="" width="420" height="240" loading="lazy">
+                    </figure>
                 </div>
             </div>
             <div class="next-hero-facts">
@@ -120,7 +125,7 @@ $products = [
             </div>
             <p class="next-process-copy">From morning attendance to term-end reports, School Sathi runs the school day for administrators, teachers and parents alike.</p>
         </div>
-        <div class="next-wrap next-showcase next-animate">
+        <div class="next-wrap next-steps next-animate">
             <article><span>For administrators</span>
                 <h3>Run the whole school.</h3>
                 <p>Admissions, fees, staffing and compliance — visible on one screen, exportable in one click.</p>
