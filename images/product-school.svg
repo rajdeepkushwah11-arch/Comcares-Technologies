@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" fill="none">
+  <rect width="1200" height="640" fill="#13151d"/>
+  <!-- window chrome -->
+  <rect x="40" y="40" width="1120" height="560" rx="14" fill="#1a1d2e" stroke="#2a2d42" stroke-width="1.5"/>
+  <rect x="40" y="40" width="1120" height="44" rx="14" fill="#1e2235"/>
+  <rect x="40" y="68" width="1120" height="16" fill="#1e2235"/>
+  <circle cx="72" cy="62" r="6" fill="#ff5f57"/>
+  <circle cx="92" cy="62" r="6" fill="#febc2e"/>
+  <circle cx="112" cy="62" r="6" fill="#28c840"/>
+  <text x="560" y="67" text-anchor="middle" font-family="monospace" font-size="12" fill="#7ddba3">School Sathi · Management Hub</text>
+
+  <!-- sidebar -->
+  <rect x="40" y="84" width="210" height="516" fill="#161827"/>
+  <!-- logo area -->
+  <rect x="56" y="96" width="178" height="48" rx="8" fill="#0e2a1a"/>
+  <text x="145" y="116" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#7ddba3" font-weight="800">School</text>
+  <text x="145" y="132" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#34d399" font-weight="800">Sathi</text>
+
+  <!-- nav items -->
+  <rect x="56" y="158" width="178" height="36" rx="7" fill="#0e2a1a"/>
+  <rect x="56" y="202" width="178" height="36" rx="7" fill="transparent"/>
+  <rect x="56" y="246" width="178" height="36" rx="7" fill="transparent"/>
+  <rect x="56" y="290" width="178" height="36" rx="7" fill="transparent"/>
+  <rect x="56" y="334" width="178" height="36" rx="7" fill="transparent"/>
+  <rect x="56" y="378" width="178" height="36" rx="7" fill="transparent"/>
+
+  <text x="80" y="181" font-family="sans-serif" font-size="12" fill="#7ddba3" font-weight="700">🏠  Dashboard</text>
+  <text x="80" y="225" font-family="sans-serif" font-size="12" fill="#6b7284">👥  Students</text>
+  <text x="80" y="269" font-family="sans-serif" font-size="12" fill="#6b7284">📋  Attendance</text>
+  <text x="80" y="313" font-family="sans-serif" font-size="12" fill="#6b7284">💰  Fees</text>
+  <text x="80" y="357" font-family="sans-serif" font-size="12" fill="#6b7284">📅  Timetable</text>
+  <text x="80" y="401" font-family="sans-serif" font-size="12" fill="#6b7284">📊  Reports</text>
+
+  <!-- online badge -->
+  <rect x="56" y="560" width="178" height="28" rx="6" fill="#0e2a1a"/>
+  <circle cx="72" cy="574" r="5" fill="#7ddba3"/>
+  <text x="84" y="578" font-family="sans-serif" font-size="11" fill="#7ddba3">All systems online</text>
+
+  <!-- top header bar -->
+  <rect x="250" y="84" width="910" height="52" rx="0" fill="#1a1d2e" stroke-bottom="#2a2d42"/>
+  <text x="270" y="116" font-family="sans-serif" font-size="16" fill="#eef0f6" font-weight="700">Good morning, Principal 👋</text>
+  <rect x="1020" y="96" width="120" height="28" rx="6" fill="#24478c"/>
+  <text x="1080" y="115" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#ffffff" font-weight="700">+ Add Student</text>
+
+  <!-- stat cards -->
+  <rect x="260" y="152" width="190" height="90" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="278" y="178" font-family="sans-serif" font-size="10" fill="#6b7284" font-weight="700" letter-spacing="1">TOTAL STUDENTS</text>
+  <text x="278" y="210" font-family="sans-serif" font-size="30" fill="#eef0f6" font-weight="800">1,248</text>
+  <text x="278" y="230" font-family="sans-serif" font-size="10" fill="#7ddba3">▲ 42 enrolled this term</text>
+
+  <rect x="464" y="152" width="190" height="90" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="482" y="178" font-family="sans-serif" font-size="10" fill="#6b7284" font-weight="700" letter-spacing="1">TODAY PRESENT</text>
+  <text x="482" y="210" font-family="sans-serif" font-size="30" fill="#eef0f6" font-weight="800">94.2%</text>
+  <text x="482" y="230" font-family="sans-serif" font-size="10" fill="#7ddba3">▲ Above monthly avg</text>
+
+  <rect x="668" y="152" width="190" height="90" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="686" y="178" font-family="sans-serif" font-size="10" fill="#6b7284" font-weight="700" letter-spacing="1">FEES COLLECTED</text>
+  <text x="686" y="210" font-family="sans-serif" font-size="30" fill="#eef0f6" font-weight="800">₹8.4L</text>
+  <text x="686" y="230" font-family="sans-serif" font-size="10" fill="#fbbf24">⚠ ₹1.2L pending</text>
+
+  <rect x="872" y="152" width="278" height="90" rx="10" fill="#0e2a1a" stroke="#1a4a2e" stroke-width="1"/>
+  <text x="890" y="178" font-family="sans-serif" font-size="10" fill="#7ddba3" font-weight="700" letter-spacing="1">UPCOMING EXAM</text>
+  <text x="890" y="205" font-family="sans-serif" font-size="18" fill="#ffffff" font-weight="800">Term II Finals</text>
+  <text x="890" y="225" font-family="sans-serif" font-size="11" fill="#7ddba3">Starts Nov 12 · 18 days away</text>
+
+  <!-- attendance chart -->
+  <rect x="260" y="258" width="420" height="200" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="278" y="284" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Weekly Attendance</text>
+  <!-- bars -->
+  <rect x="290" y="380" width="36" height="60" rx="4" fill="#24478c" opacity="0.8"/>
+  <rect x="346" y="360" width="36" height="80" rx="4" fill="#24478c" opacity="0.8"/>
+  <rect x="402" y="340" width="36" height="100" rx="4" fill="#34d399" opacity="0.9"/>
+  <rect x="458" y="350" width="36" height="90" rx="4" fill="#24478c" opacity="0.8"/>
+  <rect x="514" y="330" width="36" height="110" rx="4" fill="#34d399"/>
+  <!-- labels -->
+  <text x="308" y="454" text-anchor="middle" font-family="monospace" font-size="10" fill="#6b7284">MON</text>
+  <text x="364" y="454" text-anchor="middle" font-family="monospace" font-size="10" fill="#6b7284">TUE</text>
+  <text x="420" y="454" text-anchor="middle" font-family="monospace" font-size="10" fill="#7ddba3">WED</text>
+  <text x="476" y="454" text-anchor="middle" font-family="monospace" font-size="10" fill="#6b7284">THU</text>
+  <text x="532" y="454" text-anchor="middle" font-family="monospace" font-size="10" fill="#7ddba3">FRI</text>
+  <line x1="278" y1="440" x2="660" y2="440" stroke="#2a2d42" stroke-width="1"/>
+  <line x1="278" y1="400" x2="660" y2="400" stroke="#2a2d42" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="278" y1="360" x2="660" y2="360" stroke="#2a2d42" stroke-width="0.5" stroke-dasharray="4 4"/>
+  <line x1="278" y1="320" x2="660" y2="320" stroke="#2a2d42" stroke-width="0.5" stroke-dasharray="4 4"/>
+
+  <!-- fee status donut placeholder -->
+  <rect x="694" y="258" width="200" height="200" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="714" y="284" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Fee Status</text>
+  <circle cx="794" cy="368" r="60" fill="none" stroke="#2a2d42" stroke-width="16"/>
+  <circle cx="794" cy="368" r="60" fill="none" stroke="#7ddba3" stroke-width="16" stroke-dasharray="264 113" stroke-dashoffset="66" stroke-linecap="round"/>
+  <circle cx="794" cy="368" r="60" fill="none" stroke="#fbbf24" stroke-width="16" stroke-dasharray="113 264" stroke-dashoffset="-198" stroke-linecap="round"/>
+  <text x="794" y="362" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#eef0f6" font-weight="800">70%</text>
+  <text x="794" y="378" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#6b7284">Collected</text>
+
+  <!-- notices panel -->
+  <rect x="908" y="258" width="242" height="200" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="926" y="284" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Recent Notices</text>
+  <line x1="908" y1="294" x2="1150" y2="294" stroke="#2a2d42" stroke-width="1"/>
+  <rect x="920" y="304" width="6" height="6" rx="1" fill="#7ddba3"/>
+  <text x="934" y="313" font-family="sans-serif" font-size="11" fill="#eef0f6">PTM scheduled Nov 5</text>
+  <text x="934" y="327" font-family="sans-serif" font-size="10" fill="#6b7284">2 hours ago</text>
+  <line x1="920" y1="338" x2="1138" y2="338" stroke="#2a2d42" stroke-width="0.5"/>
+  <rect x="920" y="348" width="6" height="6" rx="1" fill="#fbbf24"/>
+  <text x="934" y="357" font-family="sans-serif" font-size="11" fill="#eef0f6">Holiday: Diwali Oct 31</text>
+  <text x="934" y="371" font-family="sans-serif" font-size="10" fill="#6b7284">Yesterday</text>
+  <line x1="920" y1="382" x2="1138" y2="382" stroke="#2a2d42" stroke-width="0.5"/>
+  <rect x="920" y="392" width="6" height="6" rx="1" fill="#5b8cff"/>
+  <text x="934" y="401" font-family="sans-serif" font-size="11" fill="#eef0f6">Exam schedule released</text>
+  <text x="934" y="415" font-family="sans-serif" font-size="10" fill="#6b7284">2 days ago</text>
+  <line x1="920" y1="426" x2="1138" y2="426" stroke="#2a2d42" stroke-width="0.5"/>
+  <text x="1029" y="446" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#a9bce8">View all notices →</text>
+
+  <!-- bottom student table -->
+  <rect x="260" y="474" width="880" height="110" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="278" y="500" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Recent Admissions</text>
+  <!-- table header -->
+  <rect x="260" y="508" width="880" height="24" fill="#161827"/>
+  <text x="290" y="524" font-family="monospace" font-size="10" fill="#6b7284">NAME</text>
+  <text x="490" y="524" font-family="monospace" font-size="10" fill="#6b7284">CLASS</text>
+  <text x="640" y="524" font-family="monospace" font-size="10" fill="#6b7284">ADMITTED</text>
+  <text x="820" y="524" font-family="monospace" font-size="10" fill="#6b7284">STATUS</text>
+  <!-- rows -->
+  <text x="290" y="548" font-family="sans-serif" font-size="11" fill="#eef0f6">Priya Sharma</text>
+  <text x="490" y="548" font-family="sans-serif" font-size="11" fill="#eef0f6">Grade 8 - A</text>
+  <text x="640" y="548" font-family="sans-serif" font-size="11" fill="#6b7284">Oct 27, 2026</text>
+  <rect x="820" y="536" width="60" height="18" rx="4" fill="#0e2a1a"/>
+  <text x="850" y="549" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#7ddba3" font-weight="700">Active</text>
+
+  <text x="290" y="570" font-family="sans-serif" font-size="11" fill="#eef0f6">Arjun Mehta</text>
+  <text x="490" y="570" font-family="sans-serif" font-size="11" fill="#eef0f6">Grade 5 - B</text>
+  <text x="640" y="570" font-family="sans-serif" font-size="11" fill="#6b7284">Oct 25, 2026</text>
+  <rect x="820" y="558" width="72" height="18" rx="4" fill="#1a1a0e"/>
+  <text x="856" y="571" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#fbbf24" font-weight="700">Fee Pending</text>
+
+  <!-- glow -->
+  <radialGradient id="glow2" cx="50%" cy="20%" r="55%">
+    <stop offset="0%" stop-color="#0e6a4d" stop-opacity="0.12"/>
+    <stop offset="100%" stop-color="#0e6a4d" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="1200" height="640" fill="url(#glow2)"/>
+</svg>

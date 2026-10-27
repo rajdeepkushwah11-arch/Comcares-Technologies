@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" fill="none">
+  <rect width="1200" height="640" fill="#13151d"/>
+  <rect x="40" y="40" width="1120" height="560" rx="14" fill="#1a1d2e" stroke="#2a2d42" stroke-width="1.5"/>
+  <rect x="40" y="40" width="1120" height="44" rx="14" fill="#1e2235"/>
+  <rect x="40" y="68" width="1120" height="16" fill="#1e2235"/>
+  <circle cx="72" cy="62" r="6" fill="#ff5f57"/>
+  <circle cx="92" cy="62" r="6" fill="#febc2e"/>
+  <circle cx="112" cy="62" r="6" fill="#28c840"/>
+  <text x="560" y="67" text-anchor="middle" font-family="monospace" font-size="12" fill="#a9bce8">Comcares · Studio Session</text>
+
+  <!-- left: team cards -->
+  <rect x="60" y="104" width="340" height="480" rx="12" fill="#161827" stroke="#2a2d42" stroke-width="1"/>
+  <text x="80" y="132" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">The Team</text>
+  <text x="80" y="150" font-family="sans-serif" font-size="11" fill="#6b7284">Senior hands on every project</text>
+
+  <!-- person 1 -->
+  <rect x="76" y="164" width="308" height="80" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <circle cx="110" cy="204" r="24" fill="#24478c"/>
+  <text x="110" y="210" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#fff" font-weight="800">AK</text>
+  <text x="146" y="192" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Aditya Kulkarni</text>
+  <text x="146" y="208" font-family="sans-serif" font-size="11" fill="#a9bce8">Founder · Engineering</text>
+  <rect x="146" y="218" width="80" height="16" rx="4" fill="#0e1a3a"/>
+  <text x="186" y="230" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#a9bce8" font-weight="700">15 yrs exp</text>
+
+  <!-- person 2 -->
+  <rect x="76" y="256" width="308" height="80" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <circle cx="110" cy="296" r="24" fill="#0e6a6a"/>
+  <text x="110" y="302" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#fff" font-weight="800">MD</text>
+  <text x="146" y="284" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Meera Deshpande</text>
+  <text x="146" y="300" font-family="sans-serif" font-size="11" fill="#7ddba3">Head of Design</text>
+  <rect x="146" y="310" width="72" height="16" rx="4" fill="#0e2a1a"/>
+  <text x="182" y="322" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#7ddba3" font-weight="700">UX · UI</text>
+
+  <!-- person 3 -->
+  <rect x="76" y="348" width="308" height="80" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <circle cx="110" cy="388" r="24" fill="#6b3fa0"/>
+  <text x="110" y="394" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#fff" font-weight="800">RS</text>
+  <text x="146" y="376" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Rohan Shah</text>
+  <text x="146" y="392" font-family="sans-serif" font-size="11" fill="#c4a0f0">Cloud · Infrastructure</text>
+  <rect x="146" y="402" width="80" height="16" rx="4" fill="#1a0e2a"/>
+  <text x="186" y="414" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#c4a0f0" font-weight="700">AWS · GCP</text>
+
+  <!-- person 4 -->
+  <rect x="76" y="440" width="308" height="80" rx="10" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <circle cx="110" cy="480" r="24" fill="#8a5a2b"/>
+  <text x="110" y="486" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#fff" font-weight="800">PN</text>
+  <text x="146" y="468" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Pooja Nair</text>
+  <text x="146" y="484" font-family="sans-serif" font-size="11" fill="#e8b36a">Client Success</text>
+  <rect x="146" y="494" width="88" height="16" rx="4" fill="#2a1a0e"/>
+  <text x="190" y="506" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#e8b36a" font-weight="700">Always available</text>
+
+  <!-- centre: project board -->
+  <rect x="420" y="104" width="420" height="480" rx="12" fill="#161827" stroke="#2a2d42" stroke-width="1"/>
+  <text x="440" y="132" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Active Sprint</text>
+  <rect x="1060" y="118" width="60" height="22" rx="5" fill="#24478c"/>
+  <text x="1090" y="133" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#fff" font-weight="700">Week 3</text>
+
+  <!-- kanban columns -->
+  <rect x="436" y="148" width="116" height="24" rx="5" fill="#1e2235"/>
+  <text x="494" y="164" text-anchor="middle" font-family="monospace" font-size="10" fill="#6b7284" font-weight="700">TO DO</text>
+  <rect x="562" y="148" width="116" height="24" rx="5" fill="#1e2235"/>
+  <text x="620" y="164" text-anchor="middle" font-family="monospace" font-size="10" fill="#fbbf24" font-weight="700">IN PROGRESS</text>
+  <rect x="688" y="148" width="116" height="24" rx="5" fill="#1e2235"/>
+  <text x="746" y="164" text-anchor="middle" font-family="monospace" font-size="10" fill="#7ddba3" font-weight="700">DONE</text>
+
+  <!-- todo cards -->
+  <rect x="436" y="180" width="116" height="64" rx="7" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="448" y="200" font-family="sans-serif" font-size="10" fill="#eef0f6" font-weight="600">API integration</text>
+  <text x="448" y="214" font-family="sans-serif" font-size="9" fill="#6b7284">Backend · 3 days</text>
+  <rect x="448" y="222" width="44" height="14" rx="3" fill="#0e1a3a"/>
+  <text x="470" y="233" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#a9bce8">AK</text>
+
+  <rect x="436" y="252" width="116" height="64" rx="7" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="448" y="272" font-family="sans-serif" font-size="10" fill="#eef0f6" font-weight="600">Mobile layout</text>
+  <text x="448" y="286" font-family="sans-serif" font-size="9" fill="#6b7284">Design · 2 days</text>
+  <rect x="448" y="294" width="44" height="14" rx="3" fill="#0e2a1a"/>
+  <text x="470" y="305" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#7ddba3">MD</text>
+
+  <!-- in progress cards -->
+  <rect x="562" y="180" width="116" height="64" rx="7" fill="#1e2235" stroke="#fbbf24" stroke-width="1" opacity="0.9"/>
+  <text x="574" y="200" font-family="sans-serif" font-size="10" fill="#eef0f6" font-weight="600">Dashboard UI</text>
+  <text x="574" y="214" font-family="sans-serif" font-size="9" fill="#6b7284">Frontend · 1 day</text>
+  <rect x="574" y="222" width="44" height="14" rx="3" fill="#1a1a0e"/>
+  <text x="596" y="233" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#fbbf24">MD</text>
+
+  <rect x="562" y="252" width="116" height="64" rx="7" fill="#1e2235" stroke="#fbbf24" stroke-width="1" opacity="0.9"/>
+  <text x="574" y="272" font-family="sans-serif" font-size="10" fill="#eef0f6" font-weight="600">Cloud deploy</text>
+  <text x="574" y="286" font-family="sans-serif" font-size="9" fill="#6b7284">Infra · 4 hrs</text>
+  <rect x="574" y="294" width="44" height="14" rx="3" fill="#1a0e2a"/>
+  <text x="596" y="305" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#c4a0f0">RS</text>
+
+  <!-- done cards -->
+  <rect x="688" y="180" width="116" height="64" rx="7" fill="#1e2235" stroke="#7ddba3" stroke-width="1" opacity="0.8"/>
+  <text x="700" y="200" font-family="sans-serif" font-size="10" fill="#eef0f6" font-weight="600">DB schema</text>
+  <text x="700" y="214" font-family="sans-serif" font-size="9" fill="#7ddba3">✓ Completed</text>
+  <rect x="700" y="222" width="44" height="14" rx="3" fill="#0e1a3a"/>
+  <text x="722" y="233" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#a9bce8">AK</text>
+
+  <rect x="688" y="252" width="116" height="64" rx="7" fill="#1e2235" stroke="#7ddba3" stroke-width="1" opacity="0.8"/>
+  <text x="700" y="272" font-family="sans-serif" font-size="10" fill="#eef0f6" font-weight="600">Client review</text>
+  <text x="700" y="286" font-family="sans-serif" font-size="9" fill="#7ddba3">✓ Approved</text>
+  <rect x="700" y="294" width="44" height="14" rx="3" fill="#2a1a0e"/>
+  <text x="722" y="305" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#e8b36a">PN</text>
+
+  <!-- velocity chart -->
+  <rect x="436" y="334" width="368" height="120" rx="8" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="452" y="356" font-family="sans-serif" font-size="12" fill="#eef0f6" font-weight="700">Sprint Velocity</text>
+  <polyline points="460,430 500,410 540,420 580,390 620,370 660,380 700,350 740,330 780,320" stroke="#a9bce8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="460,430 500,410 540,420 580,390 620,370 660,380 700,350 740,330 780,320 780,440 460,440" fill="#24478c" opacity="0.2"/>
+  <circle cx="780" cy="320" r="5" fill="#a9bce8"/>
+  <text x="786" y="316" font-family="sans-serif" font-size="10" fill="#a9bce8">Peak</text>
+  <line x1="452" y1="440" x2="796" y2="440" stroke="#2a2d42" stroke-width="1"/>
+
+  <!-- right: metrics -->
+  <rect x="860" y="104" width="300" height="480" rx="12" fill="#161827" stroke="#2a2d42" stroke-width="1"/>
+  <text x="880" y="132" font-family="sans-serif" font-size="13" fill="#eef0f6" font-weight="700">Studio Metrics</text>
+
+  <rect x="876" y="148" width="268" height="72" rx="8" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="896" y="172" font-family="sans-serif" font-size="11" fill="#6b7284">Projects Delivered</text>
+  <text x="896" y="200" font-family="sans-serif" font-size="32" fill="#eef0f6" font-weight="800">150<tspan font-size="18" fill="#a9bce8">+</tspan></text>
+
+  <rect x="876" y="232" width="268" height="72" rx="8" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="896" y="256" font-family="sans-serif" font-size="11" fill="#6b7284">Client Satisfaction</text>
+  <text x="896" y="284" font-family="sans-serif" font-size="32" fill="#7ddba3" font-weight="800">98<tspan font-size="18">%</tspan></text>
+
+  <rect x="876" y="316" width="268" height="72" rx="8" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="896" y="340" font-family="sans-serif" font-size="11" fill="#6b7284">Years in Business</text>
+  <text x="896" y="368" font-family="sans-serif" font-size="32" fill="#e8b36a" font-weight="800">10<tspan font-size="18">+</tspan></text>
+
+  <rect x="876" y="400" width="268" height="72" rx="8" fill="#0e1a3a" stroke="#24478c" stroke-width="1"/>
+  <text x="896" y="424" font-family="sans-serif" font-size="11" fill="#a9bce8">Support Coverage</text>
+  <text x="896" y="452" font-family="sans-serif" font-size="32" fill="#ffffff" font-weight="800">24<tspan font-size="18" fill="#a9bce8">/7</tspan></text>
+
+  <rect x="876" y="484" width="268" height="72" rx="8" fill="#1e2235" stroke="#2a2d42" stroke-width="1"/>
+  <text x="896" y="508" font-family="sans-serif" font-size="11" fill="#6b7284">Missed Deadlines</text>
+  <text x="896" y="536" font-family="sans-serif" font-size="32" fill="#7ddba3" font-weight="800">0</text>
+  <text x="960" y="536" font-family="sans-serif" font-size="11" fill="#7ddba3">Ever.</text>
+
+  <radialGradient id="glow3" cx="50%" cy="30%" r="60%">
+    <stop offset="0%" stop-color="#24478c" stop-opacity="0.1"/>
+    <stop offset="100%" stop-color="#24478c" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="1200" height="640" fill="url(#glow3)"/>
+</svg>
