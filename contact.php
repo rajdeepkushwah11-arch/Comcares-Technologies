@@ -1,12 +1,18 @@
 <?php
-session_start();
+require __DIR__ . '/includes/config.php';
+require __DIR__ . '/includes/auth.php';
+
 $pageTitle = 'Contact';
+$pageDesc = 'Get in touch with Comcares Technology — tell us about the website, software or system you are building and we will reply within one working day.';
 require __DIR__ . '/includes/header.php';
 
 $errors = [];
 $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+        $errors[] = 'Your session expired. Please go back and try again.';
+    }
     $name    = trim($_POST['name'] ?? '');
     $email   = trim($_POST['email'] ?? '');
     $topic   = trim($_POST['topic'] ?? 'General enquiry');
@@ -22,8 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $stmt = db()->prepare('INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)');
             $stmt->execute([$name, $email, "[{$topic}] " . $message]);
-            $success = true;
-        } catch (Throwable $e) {
+                $_SESSION['contact_done'] = true;
+                header('Location: contact.php?sent=1');
+                exit;
+            } catch (Throwable $e) {
             // DB unreachable (e.g. MySQL not running in this environment).
             // The message is not lost: keep the user's input and show a clear error.
             $errors[] = 'Something went wrong saving your message. Please try again.';
@@ -31,7 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$topics = ['New website', 'Custom software', 'School Sathi demo', 'Support &amp; maintenance', 'General enquiry'];
+if (!empty($_SESSION['contact_done'])) {
+    $success = true;
+    unset($_SESSION['contact_done']);
+}
+
+$topics = ['New website', 'Custom software', 'School Sathi demo', 'Support & maintenance', 'General enquiry'];
 ?>
 
 <div class="next-site next-contact-page">
@@ -97,6 +110,7 @@ $topics = ['New website', 'Custom software', 'School Sathi demo', 'Support &amp;
                 <?php endforeach; ?>
 
                 <form method="post" action="contact.php" class="next-form" id="contactForm" novalidate>
+                    <?= csrfField() ?>
                     <div class="next-form-row">
                         <div class="next-field">
                             <input type="text" id="name" name="name" placeholder=" " value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
@@ -114,7 +128,7 @@ $topics = ['New website', 'Custom software', 'School Sathi demo', 'Support &amp;
                         <span class="next-form-label">What's this about?</span>
                         <div class="next-topic-pills">
                             <?php foreach ($topics as $i => $t): ?>
-                                <button type="button" class="next-topic-pill<?= ($i === 0 && !isset($_POST['topic'])) || ($_POST['topic'] ?? '') === $t ? ' is-active' : '' ?>" data-topic="<?= $t ?>"><?= $t ?></button>
+                                <button type="button" class="next-topic-pill<?= ($_POST['topic'] ?? $topics[0]) === $t ? ' is-active' : '' ?>" data-topic="<?= htmlspecialchars($t) ?>"><?= htmlspecialchars($t) ?></button>
                             <?php endforeach; ?>
                         </div>
                         <input type="hidden" name="topic" id="topicInput" value="<?= htmlspecialchars($_POST['topic'] ?? $topics[0]) ?>">
@@ -197,7 +211,7 @@ $topics = ['New website', 'Custom software', 'School Sathi demo', 'Support &amp;
                     q.classList.remove('is-active');
                 });
                 p.classList.add('is-active');
-                topicInput.value = p.getAttribute('data-topic').replace('&amp;', '&');
+                topicInput.value = p.getAttribute('data-topic');
             });
         });
 
@@ -216,13 +230,15 @@ $topics = ['New website', 'Custom software', 'School Sathi demo', 'Support &amp;
         /* ---- inline validation before submit (keeps PHP validation as backstop) ---- */
         form.addEventListener('submit', function(ev) {
             var ok = true;
+            var firstInvalid = null;
             form.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(function(input) {
                 if (!input.checkValidity()) {
                     ok = false;
                     input.classList.add('is-invalid');
-                    if (ok === false && input === form.querySelector('input')) input.focus();
+                    if (!firstInvalid) firstInvalid = input;
                 }
             });
+            if (firstInvalid) firstInvalid.focus();
             if (!ok && !reduce) {
                 form.classList.remove('next-shake');
                 void form.offsetWidth; /* restart animation */

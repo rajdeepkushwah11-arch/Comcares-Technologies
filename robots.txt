@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login.php
+Disallow: /includes/
+Disallow: /api/
+
+Sitemap: https://comcarestechnology.com/sitemap.xml
