@@ -5,6 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?> &middot; <?= htmlspecialchars(SITE_NAME) ?></title>
+<?php
+$pageDesc = $pageDesc ?? 'We design and engineer websites, business software and intelligent digital systems for ambitious teams. Comcares Innovation Services Pvt. Ltd.';
+$pageCanonical = $pageCanonical ?? 'https://comcarestechnology.com/' . basename($_SERVER['SCRIPT_NAME'] ?? 'index.php');
+?>
+    <meta name="description" content="<?= htmlspecialchars($pageDesc) ?>">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="<?= htmlspecialchars($pageCanonical) ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<?= htmlspecialchars(SITE_NAME) ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?> &middot; <?= htmlspecialchars(SITE_NAME) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($pageDesc) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($pageCanonical) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars(rtrim($pageCanonical, basename($_SERVER['SCRIPT_NAME'] ?? '')), ENT_QUOTES) ?>images/logo.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <meta name="theme-color" content="#0b0d12">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">

@@ -747,6 +747,27 @@ main {
   border-radius: 0 3px 3px 0;
 }
 
+/* ---- trailing cursor dot (desktop only) ---- */
+@media (hover: hover) and (pointer: fine) {
+  #cursorDot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #0b0d12;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity .3s ease;
+    will-change: left, top;
+    mix-blend-mode: normal;
+  }
+  #cursorDot.is-active { opacity: .85; }
+  /* hide it over clickable things? keep it subtle instead — it never blocks clicks */
+  #cursorDot:hover { opacity: .85; }
+}
+
 /* ---- cursor glow (desktop only) ---- */
 @media (hover: hover) and (pointer: fine) {
   #cursorGlow {
@@ -2136,6 +2157,7 @@ body:has(.next-site) { background: #10110e; }
 .site-footer .container { max-width: 1280px; width: min(1280px, calc(100% - 3rem)); padding: 0; }
 .footer-main { display: grid; grid-template-columns: 1.5fr .8fr 1.35fr 1.15fr; gap: 2rem; padding-bottom: 3.3rem; }
 .footer-brand { align-self: start; }
+.footer-about { margin-top: .35rem; max-width: 260px; color: #aeb2a5; font-size: .75rem; line-height: 1.6; }
 .footer-brand .brand-name { font-size: 1.2rem; }
 .footer-brand .brand-tagline { font-size: .65rem; }
 .footer-column { display: flex; flex-direction: column; align-items: flex-start; gap: .65rem; }
@@ -2145,7 +2167,39 @@ body:has(.next-site) { background: #10110e; }
 .footer-column p { max-width: 240px; color: #aeb2a5; }
 .footer-contact-link { margin-top: .25rem; }
 .footer-contact-link span { margin-left: .35rem; color: var(--site-blue-light); }
-.footer-bottom { display: flex; justify-content: space-between; gap: 1.5rem; padding-top: 1rem; border-top: 1px solid #34362f; }
+
+/* ---- footer social icons ---- */
+.footer-social {
+  display: flex;
+  gap: .55rem;
+  margin-top: .9rem;
+  flex-wrap: wrap;
+}
+.social-link {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid #3a3d34;
+  background: rgba(255, 255, 255, .04);
+  color: #aeb2a5;
+  transition: color .25s ease, background .25s ease, border-color .25s ease, transform .25s cubic-bezier(.2, .75, .2, 1);
+}
+.social-link svg { width: 18px; height: 18px; display: block; }
+.social-link:hover,
+.social-link:focus-visible {
+  color: #fff;
+  background: var(--site-blue-light, #4a6fd4);
+  border-color: var(--site-blue-light, #4a6fd4);
+  transform: translateY(-3px);
+}
+.social-link:focus-visible { outline: 2px solid #ffd76a; outline-offset: 2px; }
+.social-link:nth-child(1):hover { background: #25d366; border-color: #25d366; }      /* WhatsApp */
+.social-link:nth-child(2):hover { background: radial-gradient(circle at 30% 110%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); border-color: #d6249f; } /* Instagram */
+.social-link:nth-child(3):hover { background: #1877f2; border-color: #1877f2; }      /* Facebook */
+.social-link:nth-child(4):hover { background: #4a6fd4; border-color: #4a6fd4; }      /* Email */
+.footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem 1.5rem; padding-top: 1rem; border-top: 1px solid #34362f; }
 .site-footer p, .footer-bottom a { font-size: .68rem; letter-spacing: 0; }
 .footer-bottom a { color: #8f9485; text-decoration: none; }
 .site-footer:hover p { letter-spacing: 0; }
@@ -2157,7 +2211,7 @@ body:has(.next-site) { background: #10110e; }
 .next-section h2, .next-dark-panel h2, .next-contact h2, .next-proof h2 { font-size: 64px; line-height: 1.02; }
 .next-hero h1 em, .next-section h2 em, .next-dark-panel h2 em, .next-contact h2 em { letter-spacing: 0; }
 .next-wrap { width: min(1280px, calc(100% - 3rem)); }
-.next-section { padding: 112px 0; }
+.next-section { padding: clamp(3.5rem, 5vw, 4.5rem) 0; }
 .next-service h3 { letter-spacing: 0; }
 .next-stats strong { letter-spacing: 0; }
 .next-button, .next-text-link, .next-eyebrow, .next-scroll { letter-spacing: 0; }
@@ -4624,7 +4678,7 @@ input, button, textarea, select { max-width: 100%; }
 @media (min-width: 1440px) {
   .next-wrap, .site-header .container, .site-footer .container { width: min(1360px, calc(100% - 6rem)); }
   .interior-shell { width: min(1200px, calc(100% - 6rem)); }
-  .next-section { padding-block: clamp(7rem, 8vw, 9rem); }
+  .next-section { padding-block: clamp(4.5rem, 6vw, 6rem); }
 }
 
 /* Collapse the navigation before it competes with the logo and account action on tablets. */
