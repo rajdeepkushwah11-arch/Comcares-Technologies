@@ -240,7 +240,7 @@
 }
 
 /* quick replies */
-.cc-chips { display: flex; gap: .45rem; flex-wrap: wrap; padding: 0 1rem .55rem; }
+.cc-chips { display: flex; gap: .45rem; flex-wrap: wrap; padding: 0 1rem .9rem; }
 .cc-chip {
   border: 1px solid #c9d4ec;
   background: #fff;
@@ -256,17 +256,26 @@
 .cc-chip:hover { background: #eef3fd; border-color: #1a5fb4; transform: translateY(-1px); }
 .cc-chip:focus-visible { outline: 2px solid #ffd76a; outline-offset: 2px; }
 
-/* ---------- Input ---------- */
+/* ---------- Input (floating composer) ---------- */
 /* .cc-input-row is kept for compatibility; the live markup uses .cc-form. */
 .cc-form,
 .cc-input-row {
   display: flex;
-  gap: .55rem;
-  align-items: flex-end;
-  padding: .75rem;
-  border-top: 1px solid #e3e7f2;
-  background: rgba(255, 255, 255, .92);
+  gap: .5rem;
+  align-items: center;
+  margin: .5rem .65rem .75rem;
+  padding: .4rem .4rem .4rem .35rem;
+  border: 1px solid #e2e7f4;
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(20, 40, 90, .08);
   flex: 0 0 auto;
+  transition: box-shadow .25s ease, border-color .25s ease;
+}
+.cc-form:focus-within,
+.cc-input-row:focus-within {
+  border-color: rgba(74, 111, 212, .55);
+  box-shadow: 0 6px 22px rgba(40, 80, 180, .16);
 }
 .cc-input {
   flex: 1;
@@ -274,39 +283,45 @@
   width: auto;
   box-sizing: border-box;
   resize: none;
-  border: 1px solid #d6ddef;
-  border-radius: 12px;
-  padding: .6rem .8rem;
+  border: 0;
+  border-radius: 22px;
+  padding: .6rem 1rem;
   font: inherit;
-  font-size: .87rem;
-  max-height: 96px;
-  min-height: 40px;
+  font-size: .88rem;
+  max-height: 110px;
+  min-height: 44px;
+  height: 44px;
   line-height: 1.45;
   outline: none;
-  transition: border-color .2s, box-shadow .2s;
+  background: transparent;
+  transition: background .2s;
+  scrollbar-width: none;
 }
-.cc-input:focus { border-color: var(--cc-accent); box-shadow: 0 0 0 3px rgba(79, 141, 253, .18); }
+.cc-input::-webkit-scrollbar { display: none; }
+.cc-input::placeholder { color: #9aa6c4; }
+.cc-input:focus { background: transparent; }
 .cc-send {
   flex: none;
   width: 44px;
   height: 44px;
   min-width: 44px;
   min-height: 44px;
-  align-self: flex-end;
+  align-self: center;
   border: 0;
-  border-radius: 12px;
+  border-radius: 50%;
   cursor: pointer;
   display: grid;
   place-items: center;
   background: linear-gradient(135deg, var(--cc-accent), var(--cc-violet));
   color: #fff;
-  transition: transform .18s, opacity .18s, filter .18s;
+  box-shadow: 0 4px 12px rgba(40, 80, 180, .32);
+  transition: transform .18s, opacity .18s, filter .18s, box-shadow .2s, background .2s;
 }
-.cc-send:hover { transform: translateY(-1px); filter: brightness(1.08); }
-.cc-send:active { transform: scale(.93); }
+.cc-send:hover { transform: translateY(-1px) scale(1.05); filter: brightness(1.08); box-shadow: 0 6px 16px rgba(40, 80, 180, .4); }
+.cc-send:active { transform: scale(.9); }
 .cc-send:focus-visible { outline: 3px solid #ffd76a; outline-offset: 2px; }
-.cc-send:disabled { opacity: .45; cursor: not-allowed; transform: none; filter: none; }
-.cc-send svg { width: 18px; height: 18px; }
+.cc-send:disabled { opacity: .4; cursor: not-allowed; transform: none; filter: none; box-shadow: none; }
+.cc-send svg { width: 19px; height: 19px; margin-right: -2px; }
 .cc-send.loading svg { animation: cc-spin .8s linear infinite; }
 @keyframes cc-spin { to { transform: rotate(360deg); } }
 
@@ -322,9 +337,10 @@
   }
   .cc-chips { overflow-x: auto; flex-wrap: nowrap; padding-bottom: .6rem; }
   .cc-chip { flex: none; }
-  .cc-form { gap: .45rem; padding: .65rem; }
-  .cc-input { min-height: 44px; padding: .65rem .7rem; }
+  .cc-form { gap: .45rem; margin: .45rem .55rem .55rem; padding: .35rem .35rem .35rem .3rem; padding-bottom: calc(.35rem + env(safe-area-inset-bottom, 0px)); border-radius: 24px; }
+  .cc-input { height: 44px; padding: .55rem .9rem; font-size: 16px; } /* 16px stops iOS zoom-on-focus */
   .cc-send { width: 44px; height: 44px; }
+  .cc-body { padding: .85rem; }
 }
 
 /* ---------- Reduced motion ---------- */

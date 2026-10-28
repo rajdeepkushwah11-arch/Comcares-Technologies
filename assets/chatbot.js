@@ -365,7 +365,11 @@
 
   function autoGrow() {
     input.style.height = "auto";
-    input.style.height = Math.min(input.scrollHeight, 96) + "px";
+    var h = Math.min(input.scrollHeight, 110);
+    /* keep the pill-shaped input round and centred with the send button:
+       single line stays exactly 44px, multi-line grows in steps. */
+    if (h <= 44) h = 44;
+    input.style.height = h + "px";
   }
   input.addEventListener("input", autoGrow);
 

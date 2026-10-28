@@ -69,7 +69,7 @@
     <div class="cc-hint" role="button" tabindex="0"><b>COMCARES Assistant</b>Questions about our services or School Sathi? Ask me here.</div>
 </div>
 
-<link rel="stylesheet" href="assets/chatbot.css?v=2">
+<link rel="stylesheet" href="assets/chatbot.css?v=5">
 <script src="assets/chatbot.js" defer></script>
 <script src="assets/counters.js?v=3" defer></script>
 <script src="assets/horizontal-scroll.js?v=7" defer></script>
