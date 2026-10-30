@@ -45,6 +45,14 @@ if (!empty($_SESSION['contact_done'])) {
 }
 
 $topics = ['New website', 'Custom software', 'School Sathi demo', 'Support & maintenance', 'General enquiry'];
+$requestedTopic = trim($_GET['topic'] ?? '');
+$requestedMessage = trim($_GET['message'] ?? '');
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && in_array($requestedTopic, $topics, true)) {
+    $_POST['topic'] = $requestedTopic;
+}
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $requestedMessage !== '') {
+    $_POST['message'] = substr($requestedMessage, 0, 1000);
+}
 ?>
 
 <div class="next-site next-contact-page">

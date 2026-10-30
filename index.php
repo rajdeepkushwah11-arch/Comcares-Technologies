@@ -56,10 +56,10 @@ require __DIR__ . '/includes/header.php';
                 <p class="next-intro">From a first sketch to the systems behind it, we join the dots between strategy, design and dependable engineering.</p>
             </div>
             <div class="next-service-list">
-                <a href="services.php" class="next-service"><span>01</span><h3>Digital experiences</h3><p>High-performing websites and digital products that make a clear first impression.</p><b>&nearr;</b></a>
-                <a href="services.php" class="next-service"><span>02</span><h3>Custom software</h3><p>Practical portals, dashboards and workflows shaped around your business.</p><b>&nearr;</b></a>
-                <a href="services.php" class="next-service"><span>03</span><h3>Cloud &amp; automation</h3><p>Secure, scalable systems that reduce the busywork and keep teams connected.</p><b>&nearr;</b></a>
-                <a href="services.php" class="next-service"><span>04</span><h3>Managed technology</h3><p>Proactive support, maintenance and clarity long after launch day.</p><b>&nearr;</b></a>
+                <a href="service.php?service=digital-experiences" class="next-service"><span>01</span><h3>Digital experiences</h3><p>High-performing websites and digital products that make a clear first impression.</p><b>&nearr;</b></a>
+                <a href="service.php?service=custom-software" class="next-service"><span>02</span><h3>Custom software</h3><p>Practical portals, dashboards and workflows shaped around your business.</p><b>&nearr;</b></a>
+                <a href="service.php?service=cloud-automation" class="next-service"><span>03</span><h3>Cloud &amp; automation</h3><p>Secure, scalable systems that reduce the busywork and keep teams connected.</p><b>&nearr;</b></a>
+                <a href="service.php?service=managed-technology" class="next-service"><span>04</span><h3>Managed technology</h3><p>Proactive support, maintenance and clarity long after launch day.</p><b>&nearr;</b></a>
             </div>
         </div>
     </section>

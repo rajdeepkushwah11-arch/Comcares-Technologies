@@ -14,10 +14,10 @@
             </div>
             <div class="footer-column">
                 <h2>Services</h2>
-                <a href="services.php">Website design &amp; development</a>
-                <a href="services.php">Web applications</a>
-                <a href="services.php">Maintenance &amp; hosting</a>
-                <a href="services.php">IT consulting</a>
+                <a href="service.php?service=digital-experiences">Website design &amp; development</a>
+                <a href="service.php?service=custom-software">Web applications</a>
+                <a href="service.php?service=managed-technology">Maintenance &amp; hosting</a>
+                <a href="service.php?service=it-consulting">IT consulting</a>
             </div>
             <div class="footer-column footer-connect">
                 <h2>Start a conversation</h2>
@@ -74,6 +74,7 @@
 <script src="assets/counters.js?v=3" defer></script>
 <script src="assets/horizontal-scroll.js?v=7" defer></script>
 <script src="assets/premium.js" defer></script>
+<script src="assets/fx-effects.js?v=1" defer></script>
 
 <script>
 (function () {

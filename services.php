@@ -5,6 +5,7 @@ require __DIR__ . '/includes/header.php';
 $services = [
     [
         'num' => '01',
+        'slug' => 'digital-experiences',
         'name' => 'Digital experiences',
         'tag' => 'Websites',
         'desc' => 'High-performing websites and online stores that make the right first impression — and hold attention after it.',
@@ -13,6 +14,7 @@ $services = [
     ],
     [
         'num' => '02',
+        'slug' => 'custom-software',
         'name' => 'Custom software',
         'tag' => 'Portals &amp; tools',
         'desc' => 'Portals, dashboards, booking systems and internal tools shaped around the way your business actually works.',
@@ -21,6 +23,7 @@ $services = [
     ],
     [
         'num' => '03',
+        'slug' => 'cloud-automation',
         'name' => 'Cloud &amp; automation',
         'tag' => 'Infrastructure',
         'desc' => 'Secure, scalable cloud systems and automations that remove the busywork and keep teams connected anywhere.',
@@ -29,6 +32,7 @@ $services = [
     ],
     [
         'num' => '04',
+        'slug' => 'managed-technology',
         'name' => 'Managed technology',
         'tag' => 'Support',
         'desc' => 'Proactive monitoring, updates and a named engineer who knows your system — clarity long after launch day.',
@@ -37,6 +41,7 @@ $services = [
     ],
     [
         'num' => '05',
+        'slug' => 'it-consulting',
         'name' => 'IT consulting',
         'tag' => 'Strategy',
         'desc' => 'Practical, jargon-free advice on tools, security and infrastructure — before you spend a rupee you regret.',
@@ -45,6 +50,7 @@ $services = [
     ],
     [
         'num' => '06',
+        'slug' => 'ecommerce-builds',
         'name' => 'E-commerce builds',
         'tag' => 'Online stores',
         'desc' => 'Stores that convert: clean catalogues, frictionless checkout and the reporting to know what is selling.',
@@ -115,7 +121,7 @@ $engagements = [
                         </ul>
                         <div class="next-service-foot">
                             <span class="next-service-price">From <b>&#8377;<?= number_format($s['from']) ?></b></span>
-                            <a href="contact.php" class="next-service-link" aria-label="Discuss <?= $s['name'] ?>">Discuss this <b>&nearr;</b></a>
+                            <a href="service.php?service=<?= urlencode($s['slug']) ?>" class="next-service-link" aria-label="Explore <?= strip_tags($s['name']) ?>">Explore service <b>&nearr;</b></a>
                         </div>
                     </article>
                 <?php endforeach; ?>
